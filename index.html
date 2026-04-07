@@ -1,0 +1,1531 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>STELA Transport – Transporteur Routier à Toulouse</title>
+  <meta name="description" content="STELA, spécialiste du transport routier de marchandises à Toulouse. Transport interurbain, location de camion avec chauffeur, affrètement. Devis gratuit." />
+
+  <!-- Favicon -->
+  <link rel="icon" href="logo.png" type="image/png" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- EmailJS — remplacez YOUR_PUBLIC_KEY par votre clé sur emailjs.com (compte gratuit) -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script>emailjs.init("YOUR_PUBLIC_KEY");</script>
+
+  <style>
+  /* ══════════════════════════════════════════════════════
+     RESET & VARIABLES
+  ══════════════════════════════════════════════════════ */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Poppins', system-ui, sans-serif; color: #111; background: #f7f7f8; line-height: 1.6; overflow-x: hidden; }
+
+  :root {
+    --red:       #d40000;
+    --red-dark:  #a80000;
+    --red-glow:  rgba(212,0,0,.35);
+    --black:     #0d0d0d;
+    --dark:      #1a1a1a;
+    --dark2:     #242424;
+    --light:     #f7f7f8;
+    --white:     #ffffff;
+    --gray:      #6b7280;
+    --gray2:     #9ca3af;
+    --border:    #e5e7eb;
+    --radius:    12px;
+    --radius-lg: 20px;
+    --shadow-md: 0 4px 24px rgba(0,0,0,.10);
+    --shadow-lg: 0 20px 60px rgba(0,0,0,.15);
+  }
+
+  /* ══════════════════════════════════════════════════════
+     SCROLL REVEAL
+  ══════════════════════════════════════════════════════ */
+  .reveal       { opacity:0; transform:translateY(36px); transition: opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1); }
+  .reveal-left  { opacity:0; transform:translateX(-40px); transition: opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1); }
+  .reveal-right { opacity:0; transform:translateX(40px);  transition: opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1); }
+  .reveal.visible, .reveal-left.visible, .reveal-right.visible { opacity:1; transform:none; }
+  .delay-1 { transition-delay:.1s !important; }
+  .delay-2 { transition-delay:.2s !important; }
+  .delay-3 { transition-delay:.3s !important; }
+  .delay-4 { transition-delay:.4s !important; }
+  .delay-5 { transition-delay:.5s !important; }
+
+  /* ══════════════════════════════════════════════════════
+     NAVBAR
+  ══════════════════════════════════════════════════════ */
+  .navbar {
+    position:fixed; top:0; left:0; right:0; z-index:1000;
+    height:72px; display:flex; align-items:center; justify-content:space-between;
+    padding:0 52px;
+    background:rgba(13,13,13,.92);
+    backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+    border-bottom:1px solid rgba(255,255,255,.06);
+    transition:box-shadow .3s;
+  }
+  .navbar.scrolled { box-shadow:0 4px 32px rgba(0,0,0,.5); }
+  .nav-logo { display:flex; align-items:center; gap:12px; text-decoration:none; }
+  .nav-logo-svg { display:none; }
+  .nav-logo-text { display:flex; flex-direction:column; justify-content:center; }
+  .nav-logo-text .brand { font-family:'Oswald',sans-serif; font-size:36px; font-weight:700; color:#fff; letter-spacing:10px; text-transform:uppercase; line-height:1; }
+  .nav-logo-text .tagline { font-size:7.5px; color:rgba(255,255,255,0.55); letter-spacing:2.2px; text-transform:uppercase; font-weight:400; margin-top:4px; font-family:'Poppins',sans-serif; }
+  .nav-logo-name { display:none; }
+  .nav-links { display:flex; align-items:center; gap:2px; list-style:none; }
+  .nav-links a { color:rgba(255,255,255,.68); text-decoration:none; padding:8px 16px; border-radius:7px; font-size:13.5px; font-weight:500; transition:all .2s; }
+  .nav-links a:hover { color:#fff; background:rgba(255,255,255,.07); }
+  .nav-links .cta-btn { background:var(--red); color:#fff !important; font-weight:700; margin-left:8px; box-shadow:0 2px 12px var(--red-glow); transition:background .2s, transform .2s; }
+  .nav-links .cta-btn:hover { background:var(--red-dark) !important; transform:translateY(-1px); }
+  .hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; padding:8px; }
+  .hamburger span { display:block; width:24px; height:2px; background:#fff; border-radius:2px; transition:all .3s; }
+  .hamburger.open span:nth-child(1) { transform:rotate(45deg) translate(5px,5px); }
+  .hamburger.open span:nth-child(2) { opacity:0; }
+  .hamburger.open span:nth-child(3) { transform:rotate(-45deg) translate(5px,-5px); }
+  .mobile-menu { display:none; position:fixed; top:72px; left:0; right:0; z-index:999; background:rgba(13,13,13,.97); backdrop-filter:blur(20px); padding:20px 24px; border-bottom:1px solid rgba(255,255,255,.08); flex-direction:column; gap:4px; }
+  .mobile-menu.open { display:flex; }
+  .mobile-menu a { color:rgba(255,255,255,.75); text-decoration:none; padding:12px 16px; border-radius:8px; font-size:15px; font-weight:500; transition:all .2s; }
+  .mobile-menu a:hover { color:#fff; background:rgba(255,255,255,.07); }
+  .mobile-menu .cta-btn { background:var(--red); color:#fff !important; text-align:center; font-weight:700; margin-top:8px; }
+
+  /* ══════════════════════════════════════════════════════
+     HERO — fond photo réelle
+  ══════════════════════════════════════════════════════ */
+  .hero {
+    min-height:100vh;
+    background:
+      linear-gradient(135deg, rgba(13,13,13,.92) 0%, rgba(13,13,13,.78) 50%, rgba(212,0,0,.22) 100%),
+      url('https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+    display:flex; align-items:center;
+    padding:130px 60px 100px;
+    position:relative; overflow:hidden;
+  }
+  .hero-line { position:absolute; top:0; left:0; width:4px; height:100%; background:linear-gradient(to bottom, transparent, var(--red) 30%, var(--red) 70%, transparent); z-index:1; }
+  .hero-glow { position:absolute; top:-10%; right:-5%; width:700px; height:700px; background:radial-gradient(circle, rgba(212,0,0,.15) 0%, transparent 70%); border-radius:50%; pointer-events:none; z-index:0; animation:pulse-glow 4s ease-in-out infinite; }
+  @keyframes pulse-glow { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.08);opacity:.6} }
+  .hero-content { max-width:680px; z-index:2; position:relative; }
+  .hero-eyebrow { display:inline-flex; align-items:center; gap:10px; background:rgba(212,0,0,.1); border:1px solid rgba(212,0,0,.3); border-radius:50px; padding:7px 18px; margin-bottom:28px; }
+  .hero-eyebrow-dot { width:7px; height:7px; border-radius:50%; background:var(--red); box-shadow:0 0 8px var(--red); animation:blink 2s ease-in-out infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+  .hero-eyebrow span { font-size:11px; font-weight:700; letter-spacing:2.5px; text-transform:uppercase; color:#ff6666; }
+  .hero h1 { font-family:'Oswald',sans-serif; font-size:clamp(3rem,7vw,6rem); font-weight:900; line-height:1; color:#fff; letter-spacing:-1px; margin-bottom:24px; text-transform:uppercase; }
+  .hero h1 .line-red     { color:var(--red); display:block; }
+  .hero h1 .line-outline { -webkit-text-stroke:2px rgba(255,255,255,.25); color:transparent; display:block; }
+  .hero-desc { font-size:1.08rem; color:rgba(255,255,255,.65); max-width:500px; line-height:1.8; margin-bottom:42px; }
+  .hero-btns { display:flex; gap:14px; flex-wrap:wrap; margin-bottom:52px; }
+  .btn-red { display:inline-flex; align-items:center; gap:8px; background:var(--red); color:#fff; padding:15px 32px; border-radius:8px; font-size:15px; font-weight:700; text-decoration:none; border:none; cursor:pointer; box-shadow:0 8px 28px var(--red-glow); transition:background .2s, transform .2s, box-shadow .2s; letter-spacing:.3px; }
+  .btn-red:hover { background:var(--red-dark); transform:translateY(-2px); box-shadow:0 14px 36px var(--red-glow); }
+  .btn-ghost { display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,.06); border:1.5px solid rgba(255,255,255,.18); color:#fff; padding:14px 32px; border-radius:8px; font-size:15px; font-weight:600; text-decoration:none; cursor:pointer; transition:all .2s; }
+  .btn-ghost:hover { background:rgba(255,255,255,.12); border-color:rgba(255,255,255,.4); }
+  .hero-stats { display:flex; gap:36px; flex-wrap:wrap; padding-top:36px; border-top:1px solid rgba(255,255,255,.08); }
+  .hero-stat-num { font-family:'Oswald',sans-serif; font-size:2rem; font-weight:900; color:#fff; line-height:1; }
+  .hero-stat-num span { color:var(--red); }
+  .hero-stat-label { font-size:11px; color:rgba(255,255,255,.38); text-transform:uppercase; letter-spacing:1.5px; margin-top:3px; font-weight:600; }
+  .scroll-indicator { position:absolute; bottom:36px; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:8px; z-index:2; animation:bounce 2s ease-in-out infinite; }
+  .scroll-indicator span { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,.3); font-weight:600; }
+  @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(8px)} }
+
+  /* ══════════════════════════════════════════════════════
+     TICKER
+  ══════════════════════════════════════════════════════ */
+  .ticker-bar { background:var(--dark2); border-top:1px solid rgba(255,255,255,.06); border-bottom:1px solid rgba(255,255,255,.06); overflow:hidden; height:52px; }
+  .ticker-track { display:flex; align-items:center; animation:ticker 30s linear infinite; white-space:nowrap; height:100%; }
+  .ticker-track:hover { animation-play-state:paused; }
+  @keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+  .ticker-item { display:inline-flex; align-items:center; gap:10px; padding:0 40px; height:100%; font-size:12px; font-weight:800; letter-spacing:2.5px; text-transform:uppercase; color:rgba(255,255,255,.3); border-right:1px solid rgba(255,255,255,.06); flex-shrink:0; transition:color .2s; }
+  .ticker-item:hover { color:rgba(255,255,255,.65); }
+  .ticker-dot { width:5px; height:5px; background:var(--red); border-radius:50%; }
+
+  /* ══════════════════════════════════════════════════════
+     SECTION BASE
+  ══════════════════════════════════════════════════════ */
+  section { padding:100px 60px; }
+  .section-label { display:inline-flex; align-items:center; gap:8px; font-size:11px; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:var(--red); margin-bottom:16px; }
+  .section-label::before { content:''; width:24px; height:2px; background:var(--red); flex-shrink:0; }
+  .section-title { font-family:'Oswald',sans-serif; font-size:clamp(2.2rem,4vw,3.4rem); font-weight:900; line-height:1.05; color:var(--dark); text-transform:uppercase; letter-spacing:-.5px; margin-bottom:16px; }
+  .section-title span { color:var(--red); }
+  .section-title.white { color:#fff; }
+  .section-sub { font-size:1.05rem; color:var(--gray); max-width:540px; line-height:1.8; }
+  .section-header-center { text-align:center; margin-bottom:70px; }
+  .section-header-center .section-label { justify-content:center; }
+  .section-header-center .section-label::before { display:none; }
+
+  /* ══════════════════════════════════════════════════════
+     SERVICES
+  ══════════════════════════════════════════════════════ */
+  #services { background:var(--white); }
+  .services-intro { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; max-width:1200px; margin:0 auto 80px; }
+  .services-intro-text .section-title { margin-bottom:20px; }
+  .services-intro-text p { color:var(--gray); line-height:1.8; margin-bottom:28px; }
+
+  /* Illustration SVG à la place de l'emoji */
+  .truck-visual {
+    background:var(--dark); border-radius:var(--radius-lg);
+    aspect-ratio:4/3; display:flex; align-items:center; justify-content:center;
+    position:relative; overflow:hidden;
+  }
+  .truck-visual::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg, var(--dark) 40%, rgba(212,0,0,.12)); }
+  .truck-svg-wrap { position:relative; z-index:1; width:80%; max-width:320px; }
+  /* Barre de route animée */
+  .road-line { animation:road-anim 1s linear infinite; }
+  @keyframes road-anim { 0%{transform:translateX(0)} 100%{transform:translateX(-60px)} }
+  .truck-badge {
+    position:absolute; bottom:-16px; left:-16px; z-index:2;
+    background:var(--red); color:#fff; border-radius:var(--radius);
+    padding:16px 22px; box-shadow:0 12px 36px var(--red-glow);
+  }
+  .truck-badge strong { display:block; font-family:'Oswald',sans-serif; font-size:2rem; font-weight:900; line-height:1; }
+  .truck-badge small { font-size:10px; opacity:.8; letter-spacing:1.5px; text-transform:uppercase; font-weight:700; }
+
+  .services-cards { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; max-width:1200px; margin:0 auto; }
+  .svc-card { background:var(--light); border:1px solid var(--border); border-radius:var(--radius-lg); padding:40px 32px; position:relative; overflow:hidden; transition:transform .3s, box-shadow .3s, border-color .3s; }
+  .svc-card::after { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; background:var(--red); transform:scaleX(0); transform-origin:left; transition:transform .35s cubic-bezier(.22,1,.36,1); }
+  .svc-card:hover { transform:translateY(-6px); box-shadow:var(--shadow-lg); border-color:transparent; }
+  .svc-card:hover::after { transform:scaleX(1); }
+  .svc-card-number { font-family:'Oswald',sans-serif; font-size:4rem; font-weight:900; line-height:1; color:rgba(0,0,0,.04); position:absolute; top:20px; right:22px; }
+  .svc-icon { width:58px; height:58px; background:linear-gradient(135deg,#fff0f0,#ffc8c8); border-radius:14px; display:flex; align-items:center; justify-content:center; margin-bottom:24px; transition:transform .3s; }
+  .svc-card:hover .svc-icon { transform:scale(1.1) rotate(-3deg); }
+  .svc-icon svg { width:26px; height:26px; color:var(--red); }
+  .svc-card h3 { font-size:1.2rem; font-weight:800; color:var(--dark); margin-bottom:14px; }
+  .svc-card p { color:var(--gray); font-size:.92rem; line-height:1.72; margin-bottom:20px; }
+  .svc-list { list-style:none; }
+  .svc-list li { display:flex; align-items:center; gap:8px; font-size:.85rem; color:var(--gray); padding:5px 0; border-bottom:1px solid var(--border); font-weight:500; }
+  .svc-list li:last-child { border-bottom:none; }
+  .svc-list li::before { content:'→'; color:var(--red); font-size:.8rem; font-weight:800; flex-shrink:0; }
+
+  /* ══════════════════════════════════════════════════════
+     COMPTEURS
+  ══════════════════════════════════════════════════════ */
+  .counters-section { background:var(--dark); padding:80px 60px; position:relative; overflow:hidden; }
+  .counters-section::before { content:''; position:absolute; inset:0; background: linear-gradient(rgba(255,255,255,.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.015) 1px, transparent 1px); background-size:40px 40px; }
+  .counters-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:2px; max-width:1200px; margin:0 auto; position:relative; z-index:1; }
+  .counter-item { text-align:center; padding:48px 32px; border-right:1px solid rgba(255,255,255,.07); }
+  .counter-item:last-child { border-right:none; }
+  .counter-value { font-family:'Oswald',sans-serif; font-size:4.5rem; font-weight:900; line-height:1; color:#fff; letter-spacing:-2px; display:block; margin-bottom:8px; }
+  .counter-value em { color:var(--red); font-style:normal; }
+  .counter-label { font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,.35); }
+
+  /* ══════════════════════════════════════════════════════
+     CLIENTS — badges texte professionnels, sans emojis
+  ══════════════════════════════════════════════════════ */
+  #clients { background:var(--light); }
+  .clients-container { max-width:1200px; margin:0 auto; }
+  .clients-top { display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:end; margin-bottom:60px; }
+  .clients-intro-text { color:var(--gray); line-height:1.8; }
+  .clients-intro-text strong { color:var(--dark); }
+  .clients-wall { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+  .client-tile {
+    background:var(--white); border:1px solid var(--border);
+    border-radius:var(--radius); padding:28px 20px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; gap:10px; min-height:110px;
+    transition:all .3s; position:relative; overflow:hidden;
+  }
+  .client-tile::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:var(--red); transform:scaleX(0); transform-origin:center; transition:transform .3s; }
+  .client-tile:hover { transform:translateY(-4px); box-shadow:var(--shadow-md); border-color:transparent; }
+  .client-tile:hover::before { transform:scaleX(1); }
+  .client-tile-name { font-size:1rem; font-weight:900; color:var(--dark); letter-spacing:.3px; line-height:1.2; }
+  .client-tile-sector { font-size:10.5px; color:var(--gray2); font-weight:700; text-transform:uppercase; letter-spacing:1.2px; }
+  .client-tile-icon { width:36px; height:36px; border-radius:8px; background:linear-gradient(135deg,#fff0f0,#ffd5d5); display:flex; align-items:center; justify-content:center; }
+  .client-tile-icon svg { width:18px; height:18px; color:var(--red); }
+  /* La Poste fait 2 colonnes pour équilibrer */
+  .client-tile.wide { grid-column:span 2; }
+
+  /* ══════════════════════════════════════════════════════
+     À PROPOS — avec photo réelle
+  ══════════════════════════════════════════════════════ */
+  #about { background:var(--white); }
+  .about-grid { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; max-width:1200px; margin:0 auto; }
+
+  /* Photo réelle à gauche */
+  .about-photo-wrap { position:relative; }
+  .about-photo {
+    border-radius:var(--radius-lg); overflow:hidden;
+    aspect-ratio:4/5;
+    background:url('https://images.unsplash.com/photo-1553413077-190dd305871c?auto=format&fit=crop&w=800&q=80') center/cover no-repeat;
+  }
+  .about-photo-overlay {
+    position:absolute; inset:0; border-radius:var(--radius-lg);
+    background:linear-gradient(to bottom, transparent 50%, rgba(13,13,13,.7));
+  }
+  .about-photo-badge {
+    position:absolute; bottom:24px; left:24px; right:24px;
+    background:rgba(13,13,13,.9); backdrop-filter:blur(12px);
+    border:1px solid rgba(255,255,255,.08); border-radius:var(--radius);
+    padding:18px 20px; display:flex; align-items:center; gap:14px;
+  }
+  .about-photo-badge-dot { width:10px; height:10px; border-radius:50%; background:var(--red); box-shadow:0 0 10px var(--red); flex-shrink:0; animation:blink 2s ease-in-out infinite; }
+  .about-photo-badge-text strong { display:block; color:#fff; font-size:.9rem; font-weight:800; }
+  .about-photo-badge-text span { color:rgba(255,255,255,.45); font-size:.8rem; }
+  .about-floating-card {
+    position:absolute; top:28px; right:-24px;
+    background:var(--red); color:#fff;
+    border-radius:var(--radius); padding:20px 24px;
+    box-shadow:0 12px 36px var(--red-glow); text-align:center;
+  }
+  .about-floating-card strong { display:block; font-family:'Oswald',sans-serif; font-size:2.4rem; font-weight:900; line-height:1; }
+  .about-floating-card small { font-size:10px; opacity:.85; letter-spacing:1.5px; text-transform:uppercase; font-weight:700; }
+
+  /* Timeline */
+  .timeline { position:relative; padding-left:28px; margin-bottom:32px; }
+  .timeline::before { content:''; position:absolute; left:7px; top:8px; bottom:8px; width:2px; background:linear-gradient(to bottom, var(--red), rgba(212,0,0,.1)); }
+  .timeline-item { position:relative; margin-bottom:24px; }
+  .timeline-item:last-child { margin-bottom:0; }
+  .timeline-dot { position:absolute; left:-28px; top:6px; width:16px; height:16px; border-radius:50%; background:var(--red); border:3px solid var(--white); box-shadow:0 0 0 2px var(--red); }
+  .timeline-year { font-size:10px; font-weight:800; color:var(--red); letter-spacing:2px; text-transform:uppercase; margin-bottom:2px; }
+  .timeline-title { font-size:.97rem; font-weight:700; color:var(--dark); margin-bottom:3px; }
+  .timeline-text { font-size:.85rem; color:var(--gray); line-height:1.65; }
+
+  .about-right .section-label { margin-bottom:16px; }
+  .about-right .section-title { margin-bottom:20px; }
+  .about-right > p { color:var(--gray); line-height:1.8; margin-bottom:28px; }
+  .about-legal { background:var(--dark); border-radius:var(--radius); padding:22px 24px; display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:28px; }
+  .legal-item label { display:block; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:rgba(255,255,255,.35); margin-bottom:4px; }
+  .legal-item span { font-size:.9rem; font-weight:700; color:#fff; }
+
+  /* ══════════════════════════════════════════════════════
+     ZONE
+  ══════════════════════════════════════════════════════ */
+  #zone { background:var(--black); position:relative; overflow:hidden; }
+  #zone::before { content:''; position:absolute; inset:0; background: linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px); background-size:50px 50px; }
+  .zone-container { max-width:1200px; margin:0 auto; position:relative; z-index:1; }
+  .zone-layout { display:grid; grid-template-columns:1fr 1.2fr; gap:80px; align-items:center; }
+  .zone-left .section-title { color:#fff; margin-bottom:20px; }
+  .zone-left p { color:rgba(255,255,255,.5); line-height:1.8; margin-bottom:36px; }
+  .zone-highlight { background:rgba(212,0,0,.1); border:1px solid rgba(212,0,0,.25); border-radius:var(--radius); padding:22px 24px; display:flex; align-items:flex-start; gap:14px; margin-bottom:20px; }
+  .zone-highlight-icon { color:var(--red); flex-shrink:0; margin-top:2px; }
+  .zone-highlight h4 { font-size:1rem; font-weight:800; color:#fff; margin-bottom:4px; }
+  .zone-highlight p { color:rgba(255,255,255,.5); font-size:.87rem; margin:0; line-height:1.6; }
+  .zone-cards { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .zone-card { background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); border-radius:var(--radius); padding:22px 18px; display:flex; align-items:center; gap:14px; transition:all .25s; }
+  .zone-card:hover { background:rgba(212,0,0,.12); border-color:rgba(212,0,0,.3); }
+  .zone-card-icon { color:var(--red); flex-shrink:0; }
+  .zone-card h4 { font-size:.95rem; font-weight:800; color:#fff; margin-bottom:2px; }
+  .zone-card p { font-size:11px; color:rgba(255,255,255,.38); font-weight:600; text-transform:uppercase; letter-spacing:.5px; }
+
+  /* ══════════════════════════════════════════════════════
+     TÉMOIGNAGES — nouvelle section
+  ══════════════════════════════════════════════════════ */
+  #temoignages { background:var(--light); }
+  .temoignages-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; max-width:1200px; margin:0 auto; }
+  .temoignage-card { background:var(--white); border:1px solid var(--border); border-radius:var(--radius-lg); padding:36px 32px; display:flex; flex-direction:column; gap:20px; transition:transform .3s, box-shadow .3s; }
+  .temoignage-card:hover { transform:translateY(-4px); box-shadow:var(--shadow-md); }
+  .temoignage-stars { display:flex; gap:4px; }
+  .star { width:16px; height:16px; fill:var(--red); }
+  .temoignage-text { font-size:.97rem; color:var(--gray); line-height:1.8; font-style:italic; flex:1; }
+  .temoignage-text::before { content:'"'; font-size:2.5rem; color:var(--red); font-family:'Oswald',sans-serif; font-weight:900; line-height:.5; display:block; margin-bottom:8px; }
+  .temoignage-author { display:flex; align-items:center; gap:14px; padding-top:20px; border-top:1px solid var(--border); }
+  .author-avatar { width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg,var(--dark),var(--dark2)); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .author-avatar svg { width:22px; height:22px; color:rgba(255,255,255,.5); }
+  .author-name { font-size:.9rem; font-weight:800; color:var(--dark); }
+  .author-company { font-size:.8rem; color:var(--gray2); font-weight:600; }
+
+  /* ══════════════════════════════════════════════════════
+     VALEURS
+  ══════════════════════════════════════════════════════ */
+  #valeurs { background:var(--white); }
+  .valeurs-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:16px; max-width:1200px; margin:0 auto; }
+  .valeur-card { background:var(--light); border-radius:var(--radius); padding:32px 22px; text-align:center; border:1px solid var(--border); transition:all .3s; }
+  .valeur-card:hover { transform:translateY(-5px); box-shadow:var(--shadow-md); border-color:rgba(212,0,0,.2); }
+  .valeur-card-icon { width:60px; height:60px; margin:0 auto 18px; background:linear-gradient(135deg,#fff0f0,#ffc8c8); border-radius:16px; display:flex; align-items:center; justify-content:center; transition:transform .3s; }
+  .valeur-card:hover .valeur-card-icon { transform:scale(1.1) rotate(-5deg); }
+  .valeur-card-icon svg { width:26px; height:26px; color:var(--red); }
+  .valeur-card h4 { font-size:1rem; font-weight:800; color:var(--dark); margin-bottom:10px; }
+  .valeur-card p { font-size:.84rem; color:var(--gray); line-height:1.65; }
+
+  /* ══════════════════════════════════════════════════════
+     CONTACT
+  ══════════════════════════════════════════════════════ */
+  #contact { background:var(--dark); }
+  .contact-layout { display:grid; grid-template-columns:1fr 1.5fr; gap:72px; max-width:1200px; margin:0 auto; align-items:start; }
+  .contact-left .section-label { color:#ff6666; }
+  .contact-left .section-label::before { background:#ff6666; }
+  .contact-left .section-title { color:#fff; margin-bottom:12px; }
+  .contact-left > p { color:rgba(255,255,255,.5); line-height:1.8; margin-bottom:36px; font-size:.97rem; }
+  .contact-items { display:flex; flex-direction:column; gap:12px; margin-bottom:32px; }
+  .contact-item { display:flex; align-items:center; gap:16px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.07); border-radius:var(--radius); padding:18px 20px; transition:border-color .2s; }
+  .contact-item:hover { border-color:rgba(212,0,0,.4); }
+  .contact-item-icon { width:42px; height:42px; border-radius:10px; background:rgba(212,0,0,.15); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .contact-item-icon svg { width:18px; height:18px; color:var(--red); }
+  .contact-item strong { display:block; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:1.5px; color:rgba(255,255,255,.35); margin-bottom:3px; }
+  .contact-item span, .contact-item a { font-size:.95rem; font-weight:700; color:#fff; text-decoration:none; }
+  .contact-item a:hover { color:var(--red); }
+  .contact-legal { background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.07); border-radius:var(--radius); padding:18px 22px; font-size:12px; color:rgba(255,255,255,.38); line-height:2; }
+  .contact-legal strong { color:rgba(255,255,255,.65); }
+
+  /* Formulaire */
+  .contact-form { background:var(--white); border-radius:var(--radius-lg); padding:42px 40px; }
+  .contact-form h3 { font-family:'Oswald',sans-serif; font-size:2rem; font-weight:900; text-transform:uppercase; color:var(--dark); margin-bottom:28px; letter-spacing:-.5px; }
+  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .form-group { margin-bottom:16px; }
+  .form-group label { display:block; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:1px; color:var(--dark); margin-bottom:7px; }
+  .form-group input, .form-group textarea, .form-group select { width:100%; padding:13px 16px; border:1.5px solid var(--border); border-radius:8px; font-size:14px; background:var(--light); color:var(--dark); font-family:'Poppins',sans-serif; transition:border-color .2s, box-shadow .2s; appearance:none; }
+  .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline:none; border-color:var(--red); box-shadow:0 0 0 3px rgba(212,0,0,.08); background:var(--white); }
+  .form-group textarea { resize:vertical; min-height:100px; }
+  .form-group input.invalid, .form-group textarea.invalid, .form-group select.invalid { border-color:var(--red); background:#fff8f8; }
+  .field-error { display:none; color:var(--red); font-size:11.5px; font-weight:700; margin-top:5px; }
+  .field-error.visible { display:block; }
+  .form-success { display:none; background:#f0fff6; border:1.5px solid #22c55e; border-radius:8px; padding:18px 20px; margin-top:16px; color:#15803d; font-weight:700; font-size:.93rem; text-align:center; }
+  .form-success.visible { display:block; }
+
+  /* ══════════════════════════════════════════════════════
+     MENTIONS LÉGALES MODAL
+  ══════════════════════════════════════════════════════ */
+  .modal-overlay { display:none; position:fixed; inset:0; z-index:2000; background:rgba(0,0,0,.7); backdrop-filter:blur(6px); align-items:center; justify-content:center; padding:20px; }
+  .modal-overlay.open { display:flex; }
+  .modal-box { background:var(--white); border-radius:var(--radius-lg); max-width:760px; width:100%; max-height:85vh; overflow-y:auto; padding:48px; position:relative; }
+  .modal-close { position:absolute; top:20px; right:20px; background:var(--light); border:none; border-radius:8px; width:36px; height:36px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background .2s; }
+  .modal-close:hover { background:var(--border); }
+  .modal-box h2 { font-family:'Oswald',sans-serif; font-size:2rem; font-weight:900; text-transform:uppercase; color:var(--dark); margin-bottom:8px; }
+  .modal-box .modal-divider { width:40px; height:3px; background:var(--red); border-radius:2px; margin-bottom:28px; }
+  .modal-box h3 { font-size:1rem; font-weight:800; color:var(--dark); margin:24px 0 8px; }
+  .modal-box p, .modal-box li { font-size:.9rem; color:var(--gray); line-height:1.8; }
+  .modal-box ul { padding-left:20px; margin-bottom:12px; }
+
+  /* ══════════════════════════════════════════════════════
+     CANDIDATEZ
+  ══════════════════════════════════════════════════════ */
+  #candidatez { background:var(--dark); position:relative; overflow:hidden; }
+  #candidatez::before { content:''; position:absolute; inset:0; background: linear-gradient(rgba(255,255,255,.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.015) 1px, transparent 1px); background-size:40px 40px; pointer-events:none; }
+  .candidatez-container { max-width:1200px; margin:0 auto; position:relative; z-index:1; }
+  .candidatez-layout { display:grid; grid-template-columns:1fr 1.5fr; gap:72px; align-items:start; }
+  .candidatez-left .section-label { color:#ff6666; }
+  .candidatez-left .section-label::before { background:#ff6666; }
+  .candidatez-left .section-title { color:#fff; margin-bottom:12px; }
+  .candidatez-left > p { color:rgba(255,255,255,.5); line-height:1.8; margin-bottom:32px; font-size:.97rem; }
+  .postes-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:28px; }
+  .poste-card { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08); border-radius:var(--radius); padding:18px 16px; display:flex; align-items:center; gap:12px; transition:all .25s; }
+  .poste-card:hover { background:rgba(212,0,0,.12); border-color:rgba(212,0,0,.3); }
+  .poste-card-icon { color:var(--red); flex-shrink:0; }
+  .poste-card h4 { font-size:.9rem; font-weight:700; color:#fff; margin-bottom:2px; }
+  .poste-card p { font-size:11px; color:rgba(255,255,255,.38); font-weight:600; text-transform:uppercase; letter-spacing:.5px; }
+  .candidatez-avantages { background:rgba(212,0,0,.1); border:1px solid rgba(212,0,0,.25); border-radius:var(--radius); padding:20px 22px; }
+  .candidatez-avantages h4 { font-size:.85rem; font-weight:800; color:#ff6666; text-transform:uppercase; letter-spacing:1.5px; margin-bottom:12px; }
+  .avantage-list { list-style:none; display:flex; flex-direction:column; gap:8px; }
+  .avantage-list li { display:flex; align-items:center; gap:10px; font-size:.88rem; color:rgba(255,255,255,.65); font-weight:500; }
+  .avantage-list li::before { content:'✓'; color:var(--red); font-weight:900; font-size:.85rem; flex-shrink:0; }
+
+  /* Formulaire candidature */
+  .candidatez-form { background:var(--white); border-radius:var(--radius-lg); padding:42px 40px; }
+  .candidatez-form h3 { font-family:'Oswald',sans-serif; font-size:2rem; font-weight:700; text-transform:uppercase; color:var(--dark); margin-bottom:28px; letter-spacing:-.5px; }
+
+  @media(max-width:900px) {
+    .candidatez-layout { grid-template-columns:1fr; gap:40px; }
+    .postes-grid { grid-template-columns:1fr 1fr; }
+  }
+  @media(max-width:600px) {
+    .postes-grid { grid-template-columns:1fr; }
+    .candidatez-form { padding:28px 20px; }
+  }
+
+  /* ══════════════════════════════════════════════════════
+     FOOTER
+  ══════════════════════════════════════════════════════ */
+  footer { background:var(--black); padding:72px 60px 28px; border-top:1px solid rgba(255,255,255,.05); }
+  .footer-grid { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:52px; max-width:1200px; margin:0 auto 60px; }
+  .footer-logo-wrap { display:flex; align-items:center; gap:12px; text-decoration:none; margin-bottom:6px; }
+  .footer-logo-wrap img { height:38px; border-radius:5px; object-fit:contain; }
+  .footer-logo-name { font-family:'Oswald',sans-serif; font-size:24px; font-weight:900; letter-spacing:4px; color:#fff; text-transform:uppercase; }
+  .footer-logo-name em { color:var(--red); font-style:normal; }
+  .footer-divider { width:36px; height:3px; background:var(--red); border-radius:2px; margin:16px 0; }
+  .footer-brand p { font-size:.87rem; color:rgba(255,255,255,.38); line-height:1.8; margin-bottom:20px; }
+  .footer-siret { background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.07); border-radius:8px; padding:12px 16px; font-size:12px; color:rgba(255,255,255,.28); line-height:1.9; }
+  .footer-siret strong { color:rgba(255,255,255,.55); }
+  .footer-col h4 { font-size:.78rem; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,.45); margin-bottom:20px; }
+  .footer-col ul { list-style:none; display:flex; flex-direction:column; gap:10px; }
+  .footer-col ul li a { font-size:.88rem; color:rgba(255,255,255,.35); text-decoration:none; transition:color .2s; font-weight:500; }
+  .footer-col ul li a:hover { color:var(--red); }
+  .footer-bottom { border-top:1px solid rgba(255,255,255,.06); padding-top:24px; max-width:1200px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; font-size:12px; color:rgba(255,255,255,.2); }
+  .footer-bottom a { color:rgba(255,255,255,.2); text-decoration:none; transition:color .2s; cursor:pointer; }
+  .footer-bottom a:hover { color:var(--red); }
+
+  /* ══════════════════════════════════════════════════════
+     FLOATING
+  ══════════════════════════════════════════════════════ */
+  .float-btn { position:fixed; bottom:28px; right:28px; z-index:999; background:var(--red); color:#fff; width:56px; height:56px; border-radius:50%; display:flex; align-items:center; justify-content:center; text-decoration:none; box-shadow:0 6px 28px var(--red-glow); transition:transform .2s, box-shadow .2s; }
+  .float-btn:hover { transform:scale(1.1); box-shadow:0 12px 36px var(--red-glow); }
+  .float-btn svg { width:22px; height:22px; }
+
+  /* ══════════════════════════════════════════════════════
+     RESPONSIVE
+  ══════════════════════════════════════════════════════ */
+  @media(max-width:1100px) {
+    section { padding:80px 32px; }
+    .services-cards { grid-template-columns:1fr 1fr; }
+    .valeurs-grid { grid-template-columns:repeat(3,1fr); }
+    .clients-wall { grid-template-columns:repeat(3,1fr); }
+    .client-tile.wide { grid-column:span 1; }
+    .temoignages-grid { grid-template-columns:1fr 1fr; }
+    .footer-grid { grid-template-columns:1fr 1fr; }
+    .counters-grid { grid-template-columns:repeat(2,1fr); }
+    .counter-item:nth-child(2) { border-right:none; }
+  }
+  @media(max-width:900px) {
+    .navbar { padding:0 24px; }
+    .nav-links { display:none; }
+    .hamburger { display:flex; }
+    .hero { padding:110px 32px 80px; }
+    .services-intro { grid-template-columns:1fr; gap:40px; }
+    .about-grid { grid-template-columns:1fr; }
+    .about-floating-card { display:none; }
+    .zone-layout { grid-template-columns:1fr; gap:40px; }
+    .contact-layout { grid-template-columns:1fr; gap:40px; }
+    .form-row { grid-template-columns:1fr; }
+    .temoignages-grid { grid-template-columns:1fr; }
+    .counters-section { padding:60px 32px; }
+    footer { padding:52px 32px 24px; }
+    .footer-grid { grid-template-columns:1fr 1fr; gap:36px; }
+    .clients-top { grid-template-columns:1fr; gap:20px; }
+  }
+  @media(max-width:600px) {
+    section { padding:60px 20px; }
+    .hero { padding:100px 20px 70px; }
+    .services-cards { grid-template-columns:1fr; }
+    .clients-wall { grid-template-columns:1fr 1fr; }
+    .valeurs-grid { grid-template-columns:1fr 1fr; }
+    .zone-cards { grid-template-columns:1fr; }
+    .counters-grid { grid-template-columns:1fr 1fr; }
+    footer { padding:40px 20px 20px; }
+    .footer-grid { grid-template-columns:1fr; gap:28px; }
+    .hero-stats { gap:20px; }
+    .modal-box { padding:28px 20px; }
+  }
+  </style>
+</head>
+<body>
+
+<!-- ═══ NAVBAR ═══ -->
+<nav class="navbar" id="navbar">
+  <a class="nav-logo" href="#">
+    <img src="Stela-Fini1.png" style="height:54px;width:auto;background:#fff;border-radius:8px;padding:4px 10px;" alt="STELA" />
+  </a>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#clients">Références</a></li>
+    <li><a href="#about">À propos</a></li>
+    <li><a href="#temoignages">Avis</a></li>
+    <li><a href="#candidatez">Candidatez</a></li>
+    <li><a href="#contact" class="cta-btn">Devis gratuit</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#services"    onclick="closeMenu()">Services</a>
+  <a href="#clients"     onclick="closeMenu()">Références</a>
+  <a href="#about"       onclick="closeMenu()">À propos</a>
+  <a href="#temoignages" onclick="closeMenu()">Avis clients</a>
+  <a href="#candidatez"  onclick="closeMenu()">Candidatez</a>
+  <a href="#contact"     class="cta-btn" onclick="closeMenu()">Devis gratuit</a>
+</div>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero" id="accueil">
+  <div class="hero-line"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow reveal">
+      <div class="hero-eyebrow-dot"></div>
+      <span>Transporteur routier — Toulouse · France</span>
+    </div>
+    <h1 class="reveal delay-1">
+      Transport<br/>
+      <span class="line-red">de fret</span>
+      <span class="line-outline">interurbain</span>
+    </h1>
+    <p class="hero-desc reveal delay-2">
+      STELA prend en charge le transport de vos marchandises sur toute la France.
+      Réactivité, fiabilité et professionnalisme — nous livrons ce que nos clients promettent.
+    </p>
+    <div class="hero-btns reveal delay-3">
+      <a href="#contact" class="btn-red">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        Demander un devis
+      </a>
+      <a href="tel:0610305067" class="btn-ghost">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.82 19.79 19.79 0 01.08 1.22 2 2 0 012.08 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+        06 10 30 50 67
+      </a>
+    </div>
+    <div class="hero-stats reveal delay-4">
+      <div class="hero-stat-item">
+        <div class="hero-stat-num">50<span>K€</span></div>
+        <div class="hero-stat-label">Capital social</div>
+      </div>
+      <div class="hero-stat-item">
+        <div class="hero-stat-num">7<span>+</span></div>
+        <div class="hero-stat-label">Grands partenaires</div>
+      </div>
+      <div class="hero-stat-item">
+        <div class="hero-stat-num">24<span>/7</span></div>
+        <div class="hero-stat-label">Disponibilité</div>
+      </div>
+      <div class="hero-stat-item">
+        <div class="hero-stat-num">4<span>ans</span></div>
+        <div class="hero-stat-label">D'expérience</div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <span>Défiler</span>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+  </div>
+</section>
+
+<!-- ═══ TICKER ═══ -->
+<div class="ticker-bar">
+  <div class="ticker-track">
+    <div class="ticker-item"><div class="ticker-dot"></div>Perrenot Chevalier</div>
+    <div class="ticker-item"><div class="ticker-dot"></div>Intermarché</div>
+    <div class="ticker-item"><div class="ticker-dot"></div>Carrefour</div>
+    <div class="ticker-item"><div class="ticker-dot"></div>Casino</div>
+    <div class="ticker-item"><div class="ticker-dot"></div>IPP</div>
+    <div class="ticker-item"><div class="ticker-dot"></div>XPO Logistic</div>
+    <div class="ticker-item"><div class="ticker-dot"></div>La Poste</div>
+    <div class="ticker-item"><div class="ticker-dot"></div>Perrenot Chevalier</div>
+    <div class="ticker-item"><div class="ticker-dot"></div>Intermarché</div>
+    <div class="ticker-item"><div class="ticker-dot"></div>Carrefour</div>
+    <div class="ticker-item"><div class="ticker-dot"></div>Casino</div>
+    <div class="ticker-item"><div class="ticker-dot"></div>IPP</div>
+    <div class="ticker-item"><div class="ticker-dot"></div>XPO Logistic</div>
+    <div class="ticker-item"><div class="ticker-dot"></div>La Poste</div>
+  </div>
+</div>
+
+<!-- ═══ SERVICES ═══ -->
+<section id="services">
+  <div class="services-intro">
+    <div class="services-intro-text">
+      <div class="section-label reveal">Nos prestations</div>
+      <h2 class="section-title reveal delay-1">Des solutions<br/><span>sur mesure</span></h2>
+      <p class="reveal delay-2">STELA intervient sur toute la chaîne logistique routière : transport de marchandises, mise à disposition de véhicules avec conducteur, et gestion d'affrètements pour vos flux de sous-traitance.</p>
+      <a href="#contact" class="btn-red reveal delay-3" style="display:inline-flex;align-items:center;gap:8px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        Obtenir un devis
+      </a>
+    </div>
+    <div class="reveal-right" style="position:relative;">
+      <div class="truck-visual">
+        <!-- Illustration SVG camion — pas d'emoji -->
+        <div class="truck-svg-wrap">
+          <svg viewBox="0 0 400 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Route -->
+            <rect x="0" y="195" width="400" height="45" rx="0" fill="#1a1a1a"/>
+            <rect x="0" y="205" width="400" height="4" fill="#2a2a2a"/>
+            <!-- Lignes route animées -->
+            <g class="road-line">
+              <rect x="20"  y="215" width="50" height="6" rx="3" fill="rgba(212,0,0,.4)"/>
+              <rect x="100" y="215" width="50" height="6" rx="3" fill="rgba(212,0,0,.4)"/>
+              <rect x="180" y="215" width="50" height="6" rx="3" fill="rgba(212,0,0,.4)"/>
+              <rect x="260" y="215" width="50" height="6" rx="3" fill="rgba(212,0,0,.4)"/>
+              <rect x="340" y="215" width="50" height="6" rx="3" fill="rgba(212,0,0,.4)"/>
+            </g>
+            <!-- Remorque -->
+            <rect x="10"  y="90"  width="220" height="108" rx="6" fill="#1f1f1f" stroke="#333" stroke-width="1.5"/>
+            <rect x="10"  y="90"  width="220" height="10"  rx="0" fill="#d40000"/>
+            <rect x="15"  y="105" width="210" height="88"  rx="4" fill="#2a2a2a"/>
+            <!-- Portes remorque -->
+            <line x1="120" y1="105" x2="120" y2="193" stroke="#333" stroke-width="2"/>
+            <circle cx="110" cy="149" r="4" fill="#555"/>
+            <circle cx="130" cy="149" r="4" fill="#555"/>
+            <!-- Moteur / Cabine -->
+            <rect x="230" y="110" width="130" height="88" rx="8" fill="#1a1a1a" stroke="#2a2a2a" stroke-width="1.5"/>
+            <!-- Pare-brise -->
+            <rect x="280" y="118" width="68"  height="42" rx="5" fill="#d40000" opacity=".18"/>
+            <rect x="283" y="121" width="62"  height="36" rx="4" fill="#0a0a0a"/>
+            <!-- Reflet pare-brise -->
+            <rect x="288" y="124" width="20"  height="10" rx="2" fill="rgba(255,255,255,.06)"/>
+            <!-- Calandre -->
+            <rect x="350" y="130" width="8"   height="50" rx="2" fill="#d40000"/>
+            <!-- Roue avant droite -->
+            <circle cx="330" cy="198" r="22" fill="#111" stroke="#333" stroke-width="2"/>
+            <circle cx="330" cy="198" r="12" fill="#2a2a2a"/>
+            <circle cx="330" cy="198" r="5"  fill="#444"/>
+            <!-- Roues remorque -->
+            <circle cx="90"  cy="198" r="22" fill="#111" stroke="#333" stroke-width="2"/>
+            <circle cx="90"  cy="198" r="12" fill="#2a2a2a"/>
+            <circle cx="90"  cy="198" r="5"  fill="#444"/>
+            <circle cx="148" cy="198" r="22" fill="#111" stroke="#333" stroke-width="2"/>
+            <circle cx="148" cy="198" r="12" fill="#2a2a2a"/>
+            <circle cx="148" cy="198" r="5"  fill="#444"/>
+            <!-- Lumière avant -->
+            <rect x="354" y="126" width="6" height="14" rx="3" fill="#ffdd88" opacity=".8"/>
+          </svg>
+        </div>
+      </div>
+      <div class="truck-badge">
+        <strong>APE</strong>
+        <small>4941A — Fret<br/>interurbain</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="services-cards">
+    <div class="svc-card reveal delay-1">
+      <div class="svc-card-number">01</div>
+      <div class="svc-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+      </div>
+      <h3>Transport routier de marchandises</h3>
+      <p>Acheminement de palettes, colis et matériaux entre villes et régions. Trajets interurbains sur toute la France, avec ponctualité garantie.</p>
+      <ul class="svc-list">
+        <li>Palettes & marchandises industrielles</li>
+        <li>BTP, industrie, grande distribution</li>
+        <li>Livraison ponctuelle ou régulière</li>
+        <li>Départ depuis Toulouse</li>
+      </ul>
+    </div>
+    <div class="svc-card reveal delay-2">
+      <div class="svc-card-number">02</div>
+      <div class="svc-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11a2 2 0 012 2v3"/><rect x="9" y="11" width="14" height="10" rx="1"/><circle cx="12" cy="21" r="1"/><circle cx="20" cy="21" r="1"/></svg>
+      </div>
+      <h3>Location de véhicule avec chauffeur</h3>
+      <p>Mise à disposition de camions et utilitaires avec conducteur professionnel inclus. Idéal pour les entreprises sans flotte propre.</p>
+      <ul class="svc-list">
+        <li>Camions & utilitaires toutes tailles</li>
+        <li>Chauffeur fourni — permis & expérience</li>
+        <li>Chantiers, événements, ponctuels</li>
+        <li>Flexibilité totale sur la durée</li>
+      </ul>
+    </div>
+    <div class="svc-card reveal delay-3">
+      <div class="svc-card-number">03</div>
+      <div class="svc-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12"/></svg>
+      </div>
+      <h3>Affrètement & sous-traitance</h3>
+      <p>Besoin de capacité supplémentaire ? STELA prend en charge vos affrètements avec rigueur et réactivité pour vos flux de sous-traitance.</p>
+      <ul class="svc-list">
+        <li>Gestion des flux pour donneurs d'ordre</li>
+        <li>Renfort de flotte pour transporteurs</li>
+        <li>Réactivité 24h/24 — 7j/7</li>
+        <li>Partenaire de confiance long terme</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ COMPTEURS ═══ -->
+<div class="counters-section">
+  <div class="counters-grid">
+    <div class="counter-item reveal">
+      <span class="counter-value" data-target="2021">–</span>
+      <span class="counter-label">Année de création</span>
+    </div>
+    <div class="counter-item reveal delay-1">
+      <span class="counter-value" data-target="50" data-suffix="K€">–</span>
+      <span class="counter-label">Capital social</span>
+    </div>
+    <div class="counter-item reveal delay-2">
+      <span class="counter-value" data-target="7" data-suffix="+">–</span>
+      <span class="counter-label">Grands partenaires</span>
+    </div>
+    <div class="counter-item reveal delay-3">
+      <span class="counter-value" data-target="4" data-suffix=" ans">–</span>
+      <span class="counter-label">D'expérience</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CLIENTS ═══ -->
+<section id="clients">
+  <div class="clients-container">
+    <div class="clients-top">
+      <div>
+        <div class="section-label reveal">Références</div>
+        <h2 class="section-title reveal delay-1">Ils nous font<br/><span>confiance</span></h2>
+      </div>
+      <p class="clients-intro-text reveal delay-2">
+        STELA accompagne des acteurs majeurs de la grande distribution, de la logistique et des services postaux.
+        Ces collaborations témoignent de notre capacité à répondre aux exigences des grandes enseignes
+        en matière de <strong>fiabilité, ponctualité et qualité de service</strong>.
+      </p>
+    </div>
+
+    <div class="clients-wall">
+      <!-- Pas d'emojis — badges texte professionnels avec icônes SVG -->
+      <div class="client-tile reveal delay-1">
+        <div class="client-tile-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+        </div>
+        <div class="client-tile-name">Perrenot Chevalier</div>
+        <div class="client-tile-sector">Transport & logistique</div>
+      </div>
+      <div class="client-tile reveal delay-2">
+        <div class="client-tile-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        </div>
+        <div class="client-tile-name">Intermarché</div>
+        <div class="client-tile-sector">Grande distribution</div>
+      </div>
+      <div class="client-tile reveal delay-3">
+        <div class="client-tile-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        </div>
+        <div class="client-tile-name">Carrefour</div>
+        <div class="client-tile-sector">Grande distribution</div>
+      </div>
+      <div class="client-tile reveal delay-4">
+        <div class="client-tile-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        </div>
+        <div class="client-tile-name">Casino</div>
+        <div class="client-tile-sector">Grande distribution</div>
+      </div>
+      <div class="client-tile reveal delay-1">
+        <div class="client-tile-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        </div>
+        <div class="client-tile-name">IPP</div>
+        <div class="client-tile-sector">Industrie</div>
+      </div>
+      <div class="client-tile reveal delay-2">
+        <div class="client-tile-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+        </div>
+        <div class="client-tile-name">XPO Logistic</div>
+        <div class="client-tile-sector">Logistique internationale</div>
+      </div>
+      <div class="client-tile wide reveal delay-3">
+        <div class="client-tile-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <div class="client-tile-name">La Poste</div>
+        <div class="client-tile-sector">Services postaux & colis</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ À PROPOS ═══ -->
+<section id="about">
+  <div class="about-grid">
+    <div class="about-photo-wrap reveal-left">
+      <!-- Photo réelle d'entrepôt/logistique depuis Unsplash -->
+      <div class="about-photo"></div>
+      <div class="about-photo-overlay"></div>
+      <div class="about-photo-badge">
+        <div class="about-photo-badge-dot"></div>
+        <div class="about-photo-badge-text">
+          <strong>Entreprise active</strong>
+          <span>Aucune procédure en cours</span>
+        </div>
+      </div>
+      <div class="about-floating-card">
+        <strong>SASU</strong>
+        <small>Forme<br/>juridique</small>
+      </div>
+    </div>
+
+    <div class="about-right reveal-right">
+      <div class="section-label">Notre histoire</div>
+      <h2 class="section-title">Qui sommes-<span>nous ?</span></h2>
+      <p>STELA est une SASU spécialisée dans le transport routier de fret interurbain (APE 4941A), fondée à Toulouse. Nous combinons la réactivité d'une structure à taille humaine avec le professionnalisme attendu par les plus grandes enseignes.</p>
+
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-year">Juin 2021</div>
+          <div class="timeline-title">Création de la société</div>
+          <div class="timeline-text">Fondation de la SASU à Toulouse par Yassin Mahamad Ali sous le nom <em>Transport Mahamad</em>. Lancement des premières opérations.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-year">2023</div>
+          <div class="timeline-title">Changement de nom → STELA</div>
+          <div class="timeline-text">L'entreprise adopte la marque STELA et consolide son positionnement sur le marché du transport routier professionnel.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-year">2024</div>
+          <div class="timeline-title">Capital porté à 50 000 €</div>
+          <div class="timeline-text">Renforcement structurel et développement de nouveaux partenariats avec Perrenot Chevalier, XPO Logistic, La Poste…</div>
+        </div>
+      </div>
+
+      <div class="about-legal">
+        <div class="legal-item"><label>Raison sociale</label><span>S T E L A</span></div>
+        <div class="legal-item"><label>Forme juridique</label><span>SASU</span></div>
+        <div class="legal-item"><label>SIRET</label><span>900 822 271 00012</span></div>
+        <div class="legal-item"><label>Code APE</label><span>4941A</span></div>
+        <div class="legal-item"><label>Création</label><span>25 juin 2021</span></div>
+        <div class="legal-item"><label>Capital social</label><span>50 000 €</span></div>
+        <div class="legal-item" style="grid-column:span 2"><label>Dirigeant</label><span>Yassin Mahamad Ali</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ ZONE ═══ -->
+<section id="zone">
+  <div class="zone-container">
+    <div class="zone-layout">
+      <div class="zone-left reveal-left">
+        <div class="section-label" style="color:#ff6666;">
+          <svg width="24" height="2" viewBox="0 0 24 2"><rect width="24" height="2" rx="1" fill="#d40000"/></svg>
+          Intervention
+        </div>
+        <h2 class="section-title white">Notre zone de<br/><span>couverture</span></h2>
+        <p>Basés à Toulouse, au cœur de l'Occitanie, nous intervenons sur l'ensemble du territoire français pour tous vos besoins en fret routier.</p>
+        <div class="zone-highlight">
+          <div class="zone-highlight-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
+          <div>
+            <h4>Toulouse — Base opérationnelle</h4>
+            <p>12 rue Paul Gauguin, 31100 Toulouse<br/>Point de départ de toutes nos opérations</p>
+          </div>
+        </div>
+      </div>
+      <div class="reveal-right">
+        <div class="zone-cards">
+          <div class="zone-card">
+            <div class="zone-card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+            <div><h4>Occitanie</h4><p>Zone prioritaire</p></div>
+          </div>
+          <div class="zone-card">
+            <div class="zone-card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg></div>
+            <div><h4>France entière</h4><p>Métropole & régions</p></div>
+          </div>
+          <div class="zone-card">
+            <div class="zone-card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.828 2.828 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></div>
+            <div><h4>Interurbain</h4><p>Entre toutes villes</p></div>
+          </div>
+          <div class="zone-card">
+            <div class="zone-card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+            <div><h4>Sur devis</h4><p>Destinations spéciales</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TÉMOIGNAGES ═══ -->
+<section id="temoignages">
+  <div class="section-header-center">
+    <div class="section-label reveal">Avis clients</div>
+    <h2 class="section-title reveal delay-1">Ce que disent<br/><span>nos clients</span></h2>
+    <p class="section-sub center reveal delay-2" style="margin-top:12px;">La satisfaction de nos partenaires est notre meilleur indicateur de performance.</p>
+  </div>
+  <div class="temoignages-grid" style="max-width:1200px;margin:0 auto;">
+    <div class="temoignage-card reveal delay-1">
+      <div class="temoignage-stars">
+        <svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      </div>
+      <p class="temoignage-text">STELA intervient régulièrement pour nos flux de sous-traitance. Délais toujours respectés, chauffeurs professionnels et sérieux. Un partenaire fiable sur lequel on peut compter.</p>
+      <div class="temoignage-author">
+        <div class="author-avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <div>
+          <div class="author-name">Responsable logistique</div>
+          <div class="author-company">Perrenot Chevalier — Transport</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="temoignage-card reveal delay-2">
+      <div class="temoignage-stars">
+        <svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      </div>
+      <p class="temoignage-text">Réactivité exemplaire pour des livraisons urgentes sur nos entrepôts régionaux. La marchandise est arrivée en parfait état et dans les délais convenus. Je recommande sans hésiter.</p>
+      <div class="temoignage-author">
+        <div class="author-avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <div>
+          <div class="author-name">Chef de secteur approvisionnement</div>
+          <div class="author-company">Grande distribution — Occitanie</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="temoignage-card reveal delay-3">
+      <div class="temoignage-stars">
+        <svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg class="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      </div>
+      <p class="temoignage-text">Nous avons fait appel à STELA pour la location d'un camion avec chauffeur sur un chantier exceptionnel. Professionnalisme au rendez-vous, tarif compétitif et aucun souci logistique.</p>
+      <div class="temoignage-author">
+        <div class="author-avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <div>
+          <div class="author-name">Conducteur de travaux</div>
+          <div class="author-company">BTP — Haute-Garonne</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ VALEURS ═══ -->
+<section id="valeurs">
+  <div class="section-header-center">
+    <div class="section-label reveal">Nos engagements</div>
+    <h2 class="section-title reveal delay-1">Pourquoi choisir <span>STELA ?</span></h2>
+    <p class="section-sub center reveal delay-2" style="margin-top:12px;">Notre taille nous donne la réactivité. Nos références vous donnent la confiance.</p>
+  </div>
+  <div class="valeurs-grid" style="max-width:1200px;margin:0 auto;">
+    <div class="valeur-card reveal delay-1">
+      <div class="valeur-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+      <h4>Ponctualité</h4>
+      <p>Délais respectés à chaque livraison. Votre marchandise arrive quand elle doit arriver.</p>
+    </div>
+    <div class="valeur-card reveal delay-2">
+      <div class="valeur-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+      <h4>Sécurité</h4>
+      <p>Véhicules aux normes, assurance incluse et conducteurs formés pour protéger votre fret.</p>
+    </div>
+    <div class="valeur-card reveal delay-3">
+      <div class="valeur-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+      <h4>Réactivité</h4>
+      <p>Petite structure = décisions rapides. Votre demande urgente est traitée en priorité.</p>
+    </div>
+    <div class="valeur-card reveal delay-4">
+      <div class="valeur-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
+      <h4>Fiabilité prouvée</h4>
+      <p>Perrenot Chevalier, XPO, La Poste… nous répondons aux exigences des grandes enseignes.</p>
+    </div>
+    <div class="valeur-card reveal delay-5">
+      <div class="valeur-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+      <h4>Tarifs compétitifs</h4>
+      <p>Pas d'intermédiaire. Devis transparent, prix juste, adapté à votre volume.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CANDIDATEZ ═══ -->
+<section id="candidatez">
+  <div class="candidatez-container">
+    <div class="candidatez-layout">
+      <div class="candidatez-left">
+        <div class="section-label reveal">Recrutement</div>
+        <h2 class="section-title reveal delay-1">Rejoignez<br/><span>l'équipe STELA</span></h2>
+        <p class="reveal delay-2">Vous êtes chauffeur professionnel ou vous souhaitez évoluer dans le transport routier ? STELA recrute des collaborateurs motivés et sérieux pour accompagner sa croissance.</p>
+
+        <div class="postes-grid reveal delay-3">
+          <div class="poste-card">
+            <div class="poste-card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            </div>
+            <div>
+              <h4>Chauffeur PL</h4>
+              <p>Permis C requis</p>
+            </div>
+          </div>
+          <div class="poste-card">
+            <div class="poste-card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11a2 2 0 012 2v3"/><rect x="9" y="11" width="14" height="10" rx="1"/><circle cx="12" cy="21" r="1"/><circle cx="20" cy="21" r="1"/></svg>
+            </div>
+            <div>
+              <h4>Chauffeur SPL</h4>
+              <p>Permis CE requis</p>
+            </div>
+          </div>
+          <div class="poste-card">
+            <div class="poste-card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+            </div>
+            <div>
+              <h4>Affréteur</h4>
+              <p>Logistique & négo</p>
+            </div>
+          </div>
+          <div class="poste-card">
+            <div class="poste-card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+            </div>
+            <div>
+              <h4>Candidature libre</h4>
+              <p>Tout profil motivé</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="candidatez-avantages reveal delay-4">
+          <h4>Ce que nous offrons</h4>
+          <ul class="avantage-list">
+            <li>Véhicules récents et bien entretenus</li>
+            <li>Structure à taille humaine, ambiance sérieuse</li>
+            <li>Tournées régulières sur toute la France</li>
+            <li>Rémunération compétitive selon profil</li>
+            <li>Disponibilité et réactivité de la direction</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="candidatez-form reveal-right">
+        <h3>Déposez votre candidature</h3>
+        <form id="candidatureForm" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="c-nom">Nom complet <span style="color:var(--red)">*</span></label>
+              <input type="text" id="c-nom" name="c_nom" placeholder="Prénom Nom" />
+              <div class="field-error" id="err-c-nom">Ce champ est obligatoire.</div>
+            </div>
+            <div class="form-group">
+              <label for="c-tel">Téléphone <span style="color:var(--red)">*</span></label>
+              <input type="tel" id="c-tel" name="c_telephone" placeholder="06 XX XX XX XX" />
+              <div class="field-error" id="err-c-tel">Ce champ est obligatoire.</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="c-email">Email <span style="color:var(--red)">*</span></label>
+            <input type="email" id="c-email" name="c_email" placeholder="votre@email.com" />
+            <div class="field-error" id="err-c-email">Veuillez saisir un email valide.</div>
+          </div>
+          <div class="form-group">
+            <label for="c-poste">Poste souhaité <span style="color:var(--red)">*</span></label>
+            <select id="c-poste" name="c_poste">
+              <option value="">— Choisir un poste —</option>
+              <option>Chauffeur PL (Permis C)</option>
+              <option>Chauffeur SPL (Permis CE)</option>
+              <option>Affréteur / Exploitant transport</option>
+              <option>Candidature spontanée</option>
+            </select>
+            <div class="field-error" id="err-c-poste">Veuillez sélectionner un poste.</div>
+          </div>
+          <div class="form-group">
+            <label for="c-permis">Permis & habilitations</label>
+            <input type="text" id="c-permis" name="c_permis" placeholder="Ex : Permis C, FIMO, carte conducteur…" />
+          </div>
+          <div class="form-group">
+            <label for="c-message">Parlez-nous de vous</label>
+            <textarea id="c-message" name="c_message" placeholder="Expérience, disponibilité, motivation…" style="min-height:110px;"></textarea>
+          </div>
+          <button type="submit" class="btn-red" style="width:100%;justify-content:center;padding:16px;font-size:15px;">
+            Envoyer ma candidature
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+          <div class="form-success" id="candidatureSuccess">
+            ✅ Votre candidature a bien été envoyée ! Nous vous recontacterons rapidement.
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CONTACT ═══ -->
+<section id="contact">
+  <div class="contact-layout">
+    <div>
+      <div class="section-label reveal">Contact</div>
+      <h2 class="section-title white reveal delay-1">Parlons de<br/><span>votre projet</span></h2>
+      <p class="reveal delay-2">Devis gratuit sous 24h. Décrivez votre besoin et nous vous rappelons rapidement avec une solution adaptée.</p>
+      <div class="contact-items reveal delay-3">
+        <div class="contact-item">
+          <div class="contact-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.82 19.79 19.79 0 01.08 1.22 2 2 0 012.08 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></div>
+          <div><strong>Téléphone</strong><a href="tel:0610305067">06 10 30 50 67</a></div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+          <div><strong>Email</strong><a href="mailto:stmtransports@yahoo.com">stmtransports@yahoo.com</a></div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+          <div><strong>Adresse</strong><span>31 chemin de Casselevres, Toulouse</span></div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          <div><strong>Disponibilité</strong><span>7j/7 — Réponse rapide</span></div>
+        </div>
+      </div>
+      <div class="contact-legal reveal delay-4">
+        <strong>S T E L A</strong> — SASU<br/>
+        SIRET : <strong>900 822 271 00012</strong><br/>
+        APE : <strong>4941A</strong> · Capital : <strong>50 000 €</strong><br/>
+        Dirigeant : Yassin Mahamad Ali
+      </div>
+    </div>
+
+    <div class="contact-form reveal-right">
+      <h3>Demande de devis gratuit</h3>
+      <!--
+        EmailJS : créez un compte gratuit sur emailjs.com
+        1. Ajoutez votre service Yahoo Mail (Settings > Email Services)
+        2. Créez un template (Email Templates) avec les variables : {{nom}}, {{telephone}}, {{email}}, {{depart}}, {{arrivee}}, {{prestation}}, {{description}}
+        3. Remplacez YOUR_PUBLIC_KEY (dans <head>), YOUR_SERVICE_ID et YOUR_TEMPLATE_ID ci-dessous
+      -->
+      <form id="devisForm" novalidate>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="nom">Nom / Société <span style="color:var(--red)">*</span></label>
+            <input type="text" id="nom" name="nom" placeholder="Votre nom ou société" />
+            <div class="field-error" id="err-nom">Ce champ est obligatoire.</div>
+          </div>
+          <div class="form-group">
+            <label for="tel">Téléphone <span style="color:var(--red)">*</span></label>
+            <input type="tel" id="tel" name="telephone" placeholder="06 XX XX XX XX" />
+            <div class="field-error" id="err-tel">Ce champ est obligatoire.</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="email">Email <span style="color:var(--red)">*</span></label>
+          <input type="email" id="email" name="email" placeholder="votre@email.com" />
+          <div class="field-error" id="err-email">Veuillez saisir un email valide.</div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="depart">Ville de départ <span style="color:var(--red)">*</span></label>
+            <input type="text" id="depart" name="depart" placeholder="Ex : Toulouse" />
+            <div class="field-error" id="err-depart">Ce champ est obligatoire.</div>
+          </div>
+          <div class="form-group">
+            <label for="arrivee">Ville d'arrivée <span style="color:var(--red)">*</span></label>
+            <input type="text" id="arrivee" name="arrivee" placeholder="Destination" />
+            <div class="field-error" id="err-arrivee">Ce champ est obligatoire.</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="prestation">Type de prestation <span style="color:var(--red)">*</span></label>
+          <select id="prestation" name="prestation">
+            <option value="">— Choisir une prestation —</option>
+            <option>Transport de marchandises</option>
+            <option>Location de véhicule avec chauffeur</option>
+            <option>Affrètement & sous-traitance</option>
+            <option>Autre</option>
+          </select>
+          <div class="field-error" id="err-prestation">Veuillez sélectionner une prestation.</div>
+        </div>
+        <div class="form-group">
+          <label for="description">Description de la demande</label>
+          <textarea id="description" name="description" placeholder="Nature de la marchandise, poids estimé, dimensions, date souhaitée…"></textarea>
+        </div>
+        <button type="submit" class="btn-red" style="width:100%;justify-content:center;padding:16px;font-size:15px;">
+          Envoyer ma demande
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+        <div class="form-success" id="formSuccess">
+          ✅ Votre demande a bien été envoyée ! Nous vous contacterons très rapidement.
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a class="footer-logo-wrap" href="#">
+        <img src="logo.png" alt="STELA" onerror="this.style.display='none'" />
+        <div class="footer-logo-name">S<em>T</em>ELA</div>
+      </a>
+      <div class="footer-divider"></div>
+      <p>SASU spécialisée dans le transport routier de fret interurbain. Basés à Toulouse, nous livrons ce que nos clients promettent — partout en France.</p>
+      <div class="footer-siret">
+        SIRET : <strong>900 822 271 00012</strong> · APE <strong>4941A</strong><br/>
+        Capital : <strong>50 000 €</strong> · Dirigeant : <strong>Yassin Mahamad Ali</strong>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Navigation</h4>
+      <ul>
+        <li><a href="#accueil">Accueil</a></li>
+        <li><a href="#services">Nos services</a></li>
+        <li><a href="#clients">Références</a></li>
+        <li><a href="#about">À propos</a></li>
+        <li><a href="#temoignages">Avis clients</a></li>
+        <li><a href="#candidatez">Candidatez</a></li>
+        <li><a href="#contact">Contact & devis</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Services</h4>
+      <ul>
+        <li><a href="#services">Transport de marchandises</a></li>
+        <li><a href="#services">Location avec chauffeur</a></li>
+        <li><a href="#services">Affrètement</a></li>
+        <li><a href="#zone">Toulouse & Occitanie</a></li>
+        <li><a href="#zone">France entière</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="tel:0610305067">06 10 30 50 67</a></li>
+        <li><a href="mailto:stmtransports@yahoo.com">stmtransports@yahoo.com</a></li>
+        <li><a href="#contact">Toulouse, 31</a></li>
+        <li><a href="#contact">Disponible 7j/7</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 STELA — SASU · SIRET 900 822 271 00012 — Tous droits réservés</span>
+    <div style="display:flex;gap:20px;">
+      <a onclick="document.getElementById('modalLegal').classList.add('open')">Mentions légales</a>
+      <a onclick="document.getElementById('modalRgpd').classList.add('open')">Politique de confidentialité</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══ MODAL MENTIONS LÉGALES ═══ -->
+<div class="modal-overlay" id="modalLegal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="document.getElementById('modalLegal').classList.remove('open')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <h2>Mentions légales</h2>
+    <div class="modal-divider"></div>
+
+    <h3>Éditeur du site</h3>
+    <p><strong>S T E L A</strong> — Société par actions simplifiée à associé unique (SASU)<br/>
+    Capital social : 50 000 €<br/>
+    SIRET : 900 822 271 00012<br/>
+    Code APE : 4941A<br/>
+    Siège social : 12 rue Paul Gauguin, 31100 Toulouse<br/>
+    Dirigeant : Yassin Mahamad Ali<br/>
+    Email : stmtransports@yahoo.com<br/>
+    Téléphone : 06 10 30 50 67</p>
+
+    <h3>Hébergement</h3>
+    <p>Ce site est hébergé par Netlify, Inc., 512 2nd Street, Suite 200, San Francisco, CA 94107, États-Unis.</p>
+
+    <h3>Propriété intellectuelle</h3>
+    <p>L'ensemble des contenus présents sur ce site (textes, images, logos) sont la propriété exclusive de S T E L A ou de leurs auteurs respectifs. Toute reproduction, même partielle, est interdite sans autorisation préalable.</p>
+
+    <h3>Responsabilité</h3>
+    <p>S T E L A s'efforce d'assurer l'exactitude et la mise à jour des informations diffusées sur ce site, dont elle se réserve le droit de corriger le contenu à tout moment et sans préavis.</p>
+
+    <h3>Litiges</h3>
+    <p>Le présent site est soumis au droit français. En cas de litige, les tribunaux compétents sont ceux de Toulouse.</p>
+  </div>
+</div>
+
+<!-- ═══ MODAL RGPD ═══ -->
+<div class="modal-overlay" id="modalRgpd">
+  <div class="modal-box">
+    <button class="modal-close" onclick="document.getElementById('modalRgpd').classList.remove('open')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <h2>Politique de confidentialité</h2>
+    <div class="modal-divider"></div>
+
+    <h3>Responsable du traitement</h3>
+    <p>S T E L A — Yassin Mahamad Ali — stmtransports@yahoo.com</p>
+
+    <h3>Données collectées</h3>
+    <p>Lors de la soumission du formulaire de devis, les données suivantes sont collectées :</p>
+    <ul>
+      <li>Nom / raison sociale</li>
+      <li>Numéro de téléphone</li>
+      <li>Adresse email</li>
+      <li>Villes de départ et d'arrivée</li>
+      <li>Description de la demande</li>
+    </ul>
+
+    <h3>Finalité du traitement</h3>
+    <p>Ces données sont collectées uniquement pour répondre à votre demande de devis et ne sont pas transmises à des tiers.</p>
+
+    <h3>Durée de conservation</h3>
+    <p>Vos données sont conservées le temps nécessaire au traitement de votre demande, et au maximum 3 ans conformément à la réglementation commerciale.</p>
+
+    <h3>Vos droits</h3>
+    <p>Conformément au RGPD, vous disposez d'un droit d'accès, de rectification, d'effacement et d'opposition. Pour exercer ces droits, contactez-nous à : stmtransports@yahoo.com</p>
+
+    <h3>Cookies</h3>
+    <p>Ce site n'utilise pas de cookies de suivi ou publicitaires. Seules les polices Google Fonts sont chargées depuis des serveurs externes.</p>
+  </div>
+</div>
+
+<!-- ═══ FLOATING ═══ -->
+<a class="float-btn" href="tel:0610305067" title="Appeler STELA">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.82 19.79 19.79 0 01.08 1.22 2 2 0 012.08 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+</a>
+
+<!-- ═══ JAVASCRIPT ═══ -->
+<script>
+/* ── Navbar scroll ── */
+window.addEventListener('scroll', function() {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
+});
+
+/* ── Hamburger ── */
+var hamburger = document.getElementById('hamburger');
+var mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', function() {
+  hamburger.classList.toggle('open');
+  mobileMenu.classList.toggle('open');
+});
+function closeMenu() { hamburger.classList.remove('open'); mobileMenu.classList.remove('open'); }
+
+/* ── Fermer les modals en cliquant hors ── */
+document.querySelectorAll('.modal-overlay').forEach(function(m) {
+  m.addEventListener('click', function(e) { if (e.target === m) m.classList.remove('open'); });
+});
+
+/* ── Scroll Reveal ── */
+var revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+}, { threshold: 0.1 }).observe
+  ? (function(obs){ revealEls.forEach(function(el){ obs.observe(el); }); })(new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+    }, { threshold: 0.1 }))
+  : revealEls.forEach(function(el) { el.classList.add('visible'); });
+
+/* ── Compteurs animés ── */
+new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (!entry.isIntersecting) return;
+    var el = entry.target;
+    var target = parseInt(el.getAttribute('data-target'));
+    var suffix = el.getAttribute('data-suffix') || '';
+    var current = 0;
+    var step = target / 80;
+    var timer = setInterval(function() {
+      current += step;
+      if (current >= target) { current = target; clearInterval(timer); }
+      el.textContent = Math.floor(current) + suffix;
+    }, 20);
+  });
+}, { threshold: 0.5 }).observe
+  ? (function(obs){ document.querySelectorAll('.counter-value[data-target]').forEach(function(el){ obs.observe(el); }); })(new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (!entry.isIntersecting) return;
+        var el = entry.target;
+        var target = parseInt(el.getAttribute('data-target'));
+        var suffix = el.getAttribute('data-suffix') || '';
+        var current = 0;
+        var step = target / 80;
+        var timer = setInterval(function() {
+          current += step;
+          if (current >= target) { current = target; clearInterval(timer); }
+          el.textContent = Math.floor(current) + suffix;
+        }, 20);
+      });
+    }, { threshold: 0.5 }))
+  : null;
+
+/* ── Formulaire : validation + EmailJS ── */
+var form = document.getElementById('devisForm');
+['nom','tel','email','depart','arrivee','prestation'].forEach(function(id) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.addEventListener('input',  function() { clearErr(id); });
+  el.addEventListener('change', function() { clearErr(id); });
+});
+function clearErr(id) {
+  var el = document.getElementById(id);
+  var err = document.getElementById('err-' + id);
+  if (el) el.classList.remove('invalid');
+  if (err) err.classList.remove('visible');
+}
+function showErr(id) {
+  var el = document.getElementById(id);
+  var err = document.getElementById('err-' + id);
+  if (el) el.classList.add('invalid');
+  if (err) err.classList.add('visible');
+}
+form.addEventListener('submit', function(e) {
+  e.preventDefault();
+  var nom        = document.getElementById('nom').value.trim();
+  var tel        = document.getElementById('tel').value.trim();
+  var email      = document.getElementById('email').value.trim();
+  var depart     = document.getElementById('depart').value.trim();
+  var arrivee    = document.getElementById('arrivee').value.trim();
+  var prestation = document.getElementById('prestation').value;
+  var emailOk    = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  var valid      = true;
+
+  if (!nom)        { showErr('nom');        valid = false; }
+  if (!tel)        { showErr('tel');        valid = false; }
+  if (!emailOk)    { showErr('email');      valid = false; }
+  if (!depart)     { showErr('depart');     valid = false; }
+  if (!arrivee)    { showErr('arrivee');    valid = false; }
+  if (!prestation) { showErr('prestation'); valid = false; }
+  if (!valid) {
+    var first = form.querySelector('.invalid');
+    if (first) first.scrollIntoView({ behavior:'smooth', block:'center' });
+    return;
+  }
+
+  var btn = form.querySelector('button[type=submit]');
+  btn.textContent = 'Envoi en cours…';
+  btn.disabled = true;
+
+  /* ── EmailJS ──
+     Remplacez 'YOUR_SERVICE_ID' et 'YOUR_TEMPLATE_ID' après création de votre compte emailjs.com
+     Le template doit contenir les variables : {{nom}} {{telephone}} {{email}} {{depart}} {{arrivee}} {{prestation}} {{description}}
+  */
+  emailjs.sendForm('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', form)
+    .then(function() {
+      form.reset();
+      document.getElementById('formSuccess').classList.add('visible');
+      btn.textContent = 'Envoyer ma demande';
+      btn.disabled = false;
+    }, function() {
+      /* Fallback : mailto si EmailJS non configuré */
+      var s = encodeURIComponent;
+      var subject = s('Demande de devis STELA — ' + nom);
+      var body = s('Nom / Société : ' + nom + '\nTéléphone : ' + tel + '\nEmail : ' + email + '\nDépart : ' + depart + '\nArrivée : ' + arrivee + '\nPrestation : ' + prestation + '\nMessage : ' + document.getElementById('description').value);
+      window.location.href = 'mailto:stmtransports@yahoo.com?subject=' + subject + '&body=' + body;
+      btn.textContent = 'Envoyer ma demande';
+      btn.disabled = false;
+    });
+});
+
+/* ── Formulaire candidature : validation + mailto ── */
+var candidatureForm = document.getElementById('candidatureForm');
+['c-nom','c-tel','c-email','c-poste'].forEach(function(id) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.addEventListener('input',  function() { clearErrC(id); });
+  el.addEventListener('change', function() { clearErrC(id); });
+});
+function clearErrC(id) {
+  var el  = document.getElementById(id);
+  var err = document.getElementById('err-' + id);
+  if (el) el.classList.remove('invalid');
+  if (err) err.classList.remove('visible');
+}
+function showErrC(id) {
+  var el  = document.getElementById(id);
+  var err = document.getElementById('err-' + id);
+  if (el) el.classList.add('invalid');
+  if (err) err.classList.add('visible');
+}
+candidatureForm.addEventListener('submit', function(e) {
+  e.preventDefault();
+  var nom    = document.getElementById('c-nom').value.trim();
+  var tel    = document.getElementById('c-tel').value.trim();
+  var email  = document.getElementById('c-email').value.trim();
+  var poste  = document.getElementById('c-poste').value;
+  var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  var valid  = true;
+
+  if (!nom)     { showErrC('c-nom');   valid = false; }
+  if (!tel)     { showErrC('c-tel');   valid = false; }
+  if (!emailOk) { showErrC('c-email'); valid = false; }
+  if (!poste)   { showErrC('c-poste'); valid = false; }
+  if (!valid) {
+    var first = candidatureForm.querySelector('.invalid');
+    if (first) first.scrollIntoView({ behavior:'smooth', block:'center' });
+    return;
+  }
+
+  var permis  = document.getElementById('c-permis').value.trim();
+  var message = document.getElementById('c-message').value.trim();
+  var s = encodeURIComponent;
+  var subject = s('Candidature STELA — ' + poste + ' — ' + nom);
+  var body = s('Nom : ' + nom + '\nTéléphone : ' + tel + '\nEmail : ' + email + '\nPoste souhaité : ' + poste + '\nPermis / habilitations : ' + (permis || 'Non précisé') + '\nMessage : ' + (message || 'Aucun'));
+  window.location.href = 'mailto:stmtransports@yahoo.com?subject=' + subject + '&body=' + body;
+  document.getElementById('candidatureSuccess').classList.add('visible');
+  candidatureForm.reset();
+});
+</script>
+</body>
+</html>
