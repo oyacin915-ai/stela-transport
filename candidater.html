@@ -51,7 +51,7 @@
     transition:box-shadow .3s;
   }
   .navbar.scrolled { box-shadow:0 4px 32px rgba(0,0,0,.5); }
-  .nav-logo { display:flex; align-items:center; text-decoration:none; background:#fff; height:72px; margin-left:-52px; padding:10px 28px 10px 52px; border-right:3px solid var(--red); flex-shrink:0; }
+  .nav-logo { display:flex; align-items:center; text-decoration:none; flex-shrink:0; }
   .nav-links { display:flex; align-items:center; gap:2px; list-style:none; }
   .nav-links a { color:rgba(255,255,255,.68); text-decoration:none; padding:8px 16px; border-radius:7px; font-size:13.5px; font-weight:500; transition:all .2s; }
   .nav-links a:hover { color:#fff; background:rgba(255,255,255,.07); }
@@ -172,7 +172,6 @@
   /* RESPONSIVE */
   @media(max-width:900px) {
     .navbar { padding:0 24px; }
-    .nav-logo { margin-left:-24px; padding:10px 20px 10px 24px; }
     .nav-links { display:none; }
     .hamburger { display:flex; }
     .hero-cand { padding:110px 32px 70px; }
@@ -197,7 +196,7 @@
 <!-- NAVBAR -->
 <nav class="navbar" id="navbar">
   <a class="nav-logo" href="index.html">
-    <img src="Stela-Fini1.png" style="height:48px;width:auto;" alt="STELA" />
+    <img src="Stela-Fini1.png" style="height:44px;width:auto;border-radius:6px;mix-blend-mode:lighten;opacity:.92;" alt="STELA" />
   </a>
   <ul class="nav-links">
     <li><a href="index.html#services">Services</a></li>
