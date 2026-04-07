@@ -70,7 +70,7 @@
     transition:box-shadow .3s;
   }
   .navbar.scrolled { box-shadow:0 4px 32px rgba(0,0,0,.5); }
-  .nav-logo { display:flex; align-items:center; gap:12px; text-decoration:none; }
+  .nav-logo { display:flex; align-items:center; text-decoration:none; background:#fff; height:72px; margin-left:-52px; padding:10px 28px 10px 52px; border-right:3px solid var(--red); flex-shrink:0; }
   .nav-logo-svg { display:none; }
   .nav-logo-text { display:flex; flex-direction:column; justify-content:center; }
   .nav-logo-text .brand { font-family:'Oswald',sans-serif; font-size:36px; font-weight:700; color:#fff; letter-spacing:10px; text-transform:uppercase; line-height:1; }
@@ -466,6 +466,7 @@
   }
   @media(max-width:900px) {
     .navbar { padding:0 24px; }
+    .nav-logo { margin-left:-24px; padding:10px 20px 10px 24px; }
     .nav-links { display:none; }
     .hamburger { display:flex; }
     .hero { padding:110px 32px 80px; }
@@ -501,14 +502,14 @@
 <!-- ═══ NAVBAR ═══ -->
 <nav class="navbar" id="navbar">
   <a class="nav-logo" href="#">
-    <img src="Stela-Fini1.png" style="height:54px;width:auto;background:#fff;border-radius:8px;padding:4px 10px;" alt="STELA" />
+    <img src="Stela-Fini1.png" style="height:48px;width:auto;" alt="STELA" />
   </a>
   <ul class="nav-links">
     <li><a href="#services">Services</a></li>
     <li><a href="#clients">Références</a></li>
     <li><a href="#about">À propos</a></li>
     <li><a href="#temoignages">Avis</a></li>
-    <li><a href="#candidatez">Candidatez</a></li>
+    <li><a href="candidater.html">Candidatez</a></li>
     <li><a href="#contact" class="cta-btn">Devis gratuit</a></li>
   </ul>
   <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
@@ -519,7 +520,7 @@
   <a href="#clients"     onclick="closeMenu()">Références</a>
   <a href="#about"       onclick="closeMenu()">À propos</a>
   <a href="#temoignages" onclick="closeMenu()">Avis clients</a>
-  <a href="#candidatez"  onclick="closeMenu()">Candidatez</a>
+  <a href="candidater.html"  onclick="closeMenu()">Candidatez</a>
   <a href="#contact"     class="cta-btn" onclick="closeMenu()">Devis gratuit</a>
 </div>
 
@@ -563,10 +564,6 @@
       <div class="hero-stat-item">
         <div class="hero-stat-num">24<span>/7</span></div>
         <div class="hero-stat-label">Disponibilité</div>
-      </div>
-      <div class="hero-stat-item">
-        <div class="hero-stat-num">4<span>ans</span></div>
-        <div class="hero-stat-label">D'expérience</div>
       </div>
     </div>
   </div>
@@ -1007,117 +1004,6 @@
 </section>
 
 <!-- ═══ CANDIDATEZ ═══ -->
-<section id="candidatez">
-  <div class="candidatez-container">
-    <div class="candidatez-layout">
-      <div class="candidatez-left">
-        <div class="section-label reveal">Recrutement</div>
-        <h2 class="section-title reveal delay-1">Rejoignez<br/><span>l'équipe STELA</span></h2>
-        <p class="reveal delay-2">Vous êtes chauffeur professionnel ou vous souhaitez évoluer dans le transport routier ? STELA recrute des collaborateurs motivés et sérieux pour accompagner sa croissance.</p>
-
-        <div class="postes-grid reveal delay-3">
-          <div class="poste-card">
-            <div class="poste-card-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-            </div>
-            <div>
-              <h4>Chauffeur PL</h4>
-              <p>Permis C requis</p>
-            </div>
-          </div>
-          <div class="poste-card">
-            <div class="poste-card-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11a2 2 0 012 2v3"/><rect x="9" y="11" width="14" height="10" rx="1"/><circle cx="12" cy="21" r="1"/><circle cx="20" cy="21" r="1"/></svg>
-            </div>
-            <div>
-              <h4>Chauffeur SPL</h4>
-              <p>Permis CE requis</p>
-            </div>
-          </div>
-          <div class="poste-card">
-            <div class="poste-card-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
-            </div>
-            <div>
-              <h4>Affréteur</h4>
-              <p>Logistique & négo</p>
-            </div>
-          </div>
-          <div class="poste-card">
-            <div class="poste-card-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
-            </div>
-            <div>
-              <h4>Candidature libre</h4>
-              <p>Tout profil motivé</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="candidatez-avantages reveal delay-4">
-          <h4>Ce que nous offrons</h4>
-          <ul class="avantage-list">
-            <li>Véhicules récents et bien entretenus</li>
-            <li>Structure à taille humaine, ambiance sérieuse</li>
-            <li>Tournées régulières sur toute la France</li>
-            <li>Rémunération compétitive selon profil</li>
-            <li>Disponibilité et réactivité de la direction</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="candidatez-form reveal-right">
-        <h3>Déposez votre candidature</h3>
-        <form id="candidatureForm" novalidate>
-          <div class="form-row">
-            <div class="form-group">
-              <label for="c-nom">Nom complet <span style="color:var(--red)">*</span></label>
-              <input type="text" id="c-nom" name="c_nom" placeholder="Prénom Nom" />
-              <div class="field-error" id="err-c-nom">Ce champ est obligatoire.</div>
-            </div>
-            <div class="form-group">
-              <label for="c-tel">Téléphone <span style="color:var(--red)">*</span></label>
-              <input type="tel" id="c-tel" name="c_telephone" placeholder="06 XX XX XX XX" />
-              <div class="field-error" id="err-c-tel">Ce champ est obligatoire.</div>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="c-email">Email <span style="color:var(--red)">*</span></label>
-            <input type="email" id="c-email" name="c_email" placeholder="votre@email.com" />
-            <div class="field-error" id="err-c-email">Veuillez saisir un email valide.</div>
-          </div>
-          <div class="form-group">
-            <label for="c-poste">Poste souhaité <span style="color:var(--red)">*</span></label>
-            <select id="c-poste" name="c_poste">
-              <option value="">— Choisir un poste —</option>
-              <option>Chauffeur PL (Permis C)</option>
-              <option>Chauffeur SPL (Permis CE)</option>
-              <option>Affréteur / Exploitant transport</option>
-              <option>Candidature spontanée</option>
-            </select>
-            <div class="field-error" id="err-c-poste">Veuillez sélectionner un poste.</div>
-          </div>
-          <div class="form-group">
-            <label for="c-permis">Permis & habilitations</label>
-            <input type="text" id="c-permis" name="c_permis" placeholder="Ex : Permis C, FIMO, carte conducteur…" />
-          </div>
-          <div class="form-group">
-            <label for="c-message">Parlez-nous de vous</label>
-            <textarea id="c-message" name="c_message" placeholder="Expérience, disponibilité, motivation…" style="min-height:110px;"></textarea>
-          </div>
-          <button type="submit" class="btn-red" style="width:100%;justify-content:center;padding:16px;font-size:15px;">
-            Envoyer ma candidature
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </button>
-          <div class="form-success" id="candidatureSuccess">
-            ✅ Votre candidature a bien été envoyée ! Nous vous recontacterons rapidement.
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- ═══ CONTACT ═══ -->
 <section id="contact">
   <div class="contact-layout">
@@ -1239,7 +1125,7 @@
         <li><a href="#clients">Références</a></li>
         <li><a href="#about">À propos</a></li>
         <li><a href="#temoignages">Avis clients</a></li>
-        <li><a href="#candidatez">Candidatez</a></li>
+        <li><a href="candidater.html">Candidatez</a></li>
         <li><a href="#contact">Contact & devis</a></li>
       </ul>
     </div>

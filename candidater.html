@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Candidatez — STELA Transport</title>
+  <meta name="description" content="Rejoignez l'équipe STELA Transport à Toulouse. Chauffeur PL, SPL, affréteur — déposez votre candidature." />
+  <link rel="icon" href="logo.png" type="image/png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Poppins', system-ui, sans-serif; color: #111; background: #f7f7f8; line-height: 1.6; overflow-x: hidden; }
+
+  :root {
+    --red:       #d40000;
+    --red-dark:  #a80000;
+    --red-glow:  rgba(212,0,0,.28);
+    --dark:      #0d0d0d;
+    --dark2:     #1a1a1a;
+    --white:     #ffffff;
+    --light:     #f4f4f6;
+    --gray:      #555;
+    --gray2:     #888;
+    --border:    #e5e5e5;
+    --radius:    12px;
+    --radius-lg: 20px;
+    --shadow-md: 0 8px 32px rgba(0,0,0,.10);
+    --shadow-lg: 0 20px 60px rgba(0,0,0,.15);
+  }
+
+  .reveal       { opacity:0; transform:translateY(36px); transition: opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1); }
+  .reveal-right { opacity:0; transform:translateX(40px);  transition: opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1); }
+  .reveal.visible, .reveal-right.visible { opacity:1; transform:none; }
+  .delay-1 { transition-delay:.1s !important; }
+  .delay-2 { transition-delay:.2s !important; }
+  .delay-3 { transition-delay:.3s !important; }
+  .delay-4 { transition-delay:.4s !important; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+  /* NAVBAR */
+  .navbar {
+    position:fixed; top:0; left:0; right:0; z-index:1000;
+    height:72px; display:flex; align-items:center; justify-content:space-between;
+    padding:0 52px;
+    background:rgba(13,13,13,.92);
+    backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+    border-bottom:1px solid rgba(255,255,255,.06);
+    transition:box-shadow .3s;
+  }
+  .navbar.scrolled { box-shadow:0 4px 32px rgba(0,0,0,.5); }
+  .nav-logo { display:flex; align-items:center; text-decoration:none; background:#fff; height:72px; margin-left:-52px; padding:10px 28px 10px 52px; border-right:3px solid var(--red); flex-shrink:0; }
+  .nav-links { display:flex; align-items:center; gap:2px; list-style:none; }
+  .nav-links a { color:rgba(255,255,255,.68); text-decoration:none; padding:8px 16px; border-radius:7px; font-size:13.5px; font-weight:500; transition:all .2s; }
+  .nav-links a:hover { color:#fff; background:rgba(255,255,255,.07); }
+  .nav-links .cta-btn { background:var(--red); color:#fff !important; font-weight:700; margin-left:8px; box-shadow:0 2px 12px var(--red-glow); transition:background .2s, transform .2s; }
+  .nav-links .cta-btn:hover { background:var(--red-dark) !important; transform:translateY(-1px); }
+  .hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none; padding:4px; }
+  .hamburger span { display:block; width:24px; height:2px; background:#fff; border-radius:2px; transition:all .3s; }
+  .hamburger.open span:nth-child(1) { transform:rotate(45deg) translate(5px,5px); }
+  .hamburger.open span:nth-child(2) { opacity:0; }
+  .hamburger.open span:nth-child(3) { transform:rotate(-45deg) translate(5px,-5px); }
+  .mobile-menu { display:none; position:fixed; top:72px; left:0; right:0; z-index:999; background:rgba(13,13,13,.97); backdrop-filter:blur(20px); padding:20px 24px; border-bottom:1px solid rgba(255,255,255,.08); flex-direction:column; gap:4px; }
+  .mobile-menu.open { display:flex; }
+  .mobile-menu a { color:rgba(255,255,255,.75); text-decoration:none; padding:12px 16px; border-radius:8px; font-size:15px; font-weight:500; transition:all .2s; }
+  .mobile-menu a:hover { color:#fff; background:rgba(255,255,255,.07); }
+  .mobile-menu .cta-btn { background:var(--red); color:#fff !important; text-align:center; font-weight:700; margin-top:8px; }
+
+  /* HERO CANDIDATURE */
+  .hero-cand {
+    min-height:340px;
+    background: linear-gradient(135deg, rgba(13,13,13,.96) 0%, rgba(13,13,13,.85) 60%, rgba(212,0,0,.25) 100%),
+      url('https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+    display:flex; align-items:center;
+    padding:130px 60px 80px;
+    position:relative; overflow:hidden;
+  }
+  .hero-cand-line { position:absolute; top:0; left:0; width:4px; height:100%; background:linear-gradient(to bottom, transparent, var(--red) 30%, var(--red) 70%, transparent); }
+  .hero-cand-content { max-width:680px; z-index:2; position:relative; }
+  .hero-eyebrow { display:inline-flex; align-items:center; gap:10px; background:rgba(212,0,0,.1); border:1px solid rgba(212,0,0,.3); border-radius:50px; padding:7px 18px; margin-bottom:24px; }
+  .hero-eyebrow-dot { width:7px; height:7px; border-radius:50%; background:var(--red); box-shadow:0 0 8px var(--red); animation:blink 2s ease-in-out infinite; }
+  .hero-eyebrow span { font-size:11px; font-weight:700; letter-spacing:2.5px; text-transform:uppercase; color:#ff6666; }
+  .hero-cand h1 { font-family:'Oswald',sans-serif; font-size:clamp(2.4rem,5vw,4.2rem); font-weight:900; line-height:1.05; color:#fff; letter-spacing:-1px; margin-bottom:16px; text-transform:uppercase; }
+  .hero-cand h1 span { color:var(--red); }
+  .hero-cand p { font-size:1.05rem; color:rgba(255,255,255,.62); max-width:480px; line-height:1.8; }
+
+  /* SECTION */
+  section { padding:90px 60px; }
+  .section-label { display:inline-flex; align-items:center; gap:8px; font-size:11px; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:var(--red); margin-bottom:16px; }
+  .section-label::before { content:''; width:24px; height:2px; background:var(--red); flex-shrink:0; }
+  .section-title { font-family:'Oswald',sans-serif; font-size:clamp(2rem,4vw,3rem); font-weight:900; line-height:1.05; color:var(--dark); text-transform:uppercase; letter-spacing:-.5px; margin-bottom:16px; }
+  .section-title span { color:var(--red); }
+  .btn-red { display:inline-flex; align-items:center; gap:8px; background:var(--red); color:#fff; padding:15px 32px; border-radius:8px; font-size:15px; font-weight:700; text-decoration:none; border:none; cursor:pointer; box-shadow:0 8px 28px var(--red-glow); transition:background .2s, transform .2s; letter-spacing:.3px; font-family:'Poppins',sans-serif; }
+  .btn-red:hover { background:var(--red-dark); transform:translateY(-2px); }
+
+  /* CANDIDATEZ */
+  #candidatez { background:var(--dark); position:relative; overflow:hidden; }
+  #candidatez::before { content:''; position:absolute; inset:0; background: linear-gradient(rgba(255,255,255,.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.015) 1px, transparent 1px); background-size:40px 40px; pointer-events:none; }
+  .candidatez-container { max-width:1200px; margin:0 auto; position:relative; z-index:1; }
+  .candidatez-layout { display:grid; grid-template-columns:1fr 1.5fr; gap:72px; align-items:start; }
+  .candidatez-left .section-label { color:#ff6666; }
+  .candidatez-left .section-label::before { background:#ff6666; }
+  .candidatez-left .section-title { color:#fff; margin-bottom:12px; }
+  .candidatez-left > p { color:rgba(255,255,255,.5); line-height:1.8; margin-bottom:32px; font-size:.97rem; }
+  .postes-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:28px; }
+  .poste-card { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08); border-radius:var(--radius); padding:18px 16px; display:flex; align-items:center; gap:12px; transition:all .25s; }
+  .poste-card:hover { background:rgba(212,0,0,.12); border-color:rgba(212,0,0,.3); }
+  .poste-card-icon { color:var(--red); flex-shrink:0; }
+  .poste-card h4 { font-size:.9rem; font-weight:700; color:#fff; margin-bottom:2px; }
+  .poste-card p { font-size:11px; color:rgba(255,255,255,.38); font-weight:600; text-transform:uppercase; letter-spacing:.5px; }
+  .candidatez-avantages { background:rgba(212,0,0,.1); border:1px solid rgba(212,0,0,.25); border-radius:var(--radius); padding:20px 22px; }
+  .candidatez-avantages h4 { font-size:.85rem; font-weight:800; color:#ff6666; text-transform:uppercase; letter-spacing:1.5px; margin-bottom:12px; }
+  .avantage-list { list-style:none; display:flex; flex-direction:column; gap:8px; }
+  .avantage-list li { display:flex; align-items:center; gap:10px; font-size:.9rem; color:rgba(255,255,255,.7); font-weight:500; }
+  .avantage-list li::before { content:'✓'; color:var(--red); font-weight:900; flex-shrink:0; }
+  .candidatez-form { background:var(--white); border-radius:var(--radius-lg); padding:42px 40px; }
+  .candidatez-form h3 { font-family:'Oswald',sans-serif; font-size:2rem; font-weight:700; text-transform:uppercase; color:var(--dark); margin-bottom:28px; letter-spacing:-.5px; }
+
+  /* FORM */
+  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .form-group { margin-bottom:16px; }
+  .form-group label { display:block; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:1px; color:var(--dark); margin-bottom:7px; }
+  .form-group input, .form-group textarea, .form-group select { width:100%; padding:13px 16px; border:1.5px solid var(--border); border-radius:8px; font-size:14px; background:var(--light); color:var(--dark); font-family:'Poppins',sans-serif; transition:border-color .2s, box-shadow .2s; appearance:none; }
+  .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline:none; border-color:var(--red); box-shadow:0 0 0 3px rgba(212,0,0,.08); background:var(--white); }
+  .form-group textarea { resize:vertical; min-height:110px; }
+  .form-group input.invalid, .form-group select.invalid { border-color:var(--red); background:#fff8f8; }
+  .field-error { display:none; color:var(--red); font-size:11.5px; font-weight:700; margin-top:5px; }
+  .field-error.visible { display:block; }
+  .form-success { display:none; background:#f0fff6; border:1.5px solid #22c55e; border-radius:8px; padding:18px 20px; margin-top:16px; color:#15803d; font-weight:700; font-size:.93rem; text-align:center; }
+  .form-success.visible { display:block; }
+
+  /* FOOTER */
+  footer { background:var(--dark); color:rgba(255,255,255,.55); padding:72px 60px 32px; }
+  .footer-grid { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:60px; margin-bottom:52px; }
+  .footer-brand p { font-size:.9rem; line-height:1.8; margin-bottom:20px; }
+  .footer-logo-wrap { display:flex; align-items:center; gap:12px; text-decoration:none; margin-bottom:20px; }
+  .footer-logo-wrap img { height:38px; border-radius:5px; object-fit:contain; }
+  .footer-logo-name { font-family:'Oswald',sans-serif; font-size:24px; font-weight:900; letter-spacing:4px; color:#fff; text-transform:uppercase; }
+  .footer-logo-name em { color:var(--red); font-style:normal; }
+  .footer-divider { width:40px; height:3px; background:var(--red); border-radius:2px; margin-bottom:20px; }
+  .footer-siret { font-size:11px; color:rgba(255,255,255,.25); line-height:1.9; }
+  footer h4 { font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:2.5px; color:rgba(255,255,255,.35); margin-bottom:20px; }
+  footer ul { list-style:none; display:flex; flex-direction:column; gap:10px; }
+  footer ul li a { color:rgba(255,255,255,.55); text-decoration:none; font-size:.88rem; font-weight:500; transition:color .2s; }
+  footer ul li a:hover { color:#fff; }
+  .footer-bottom { border-top:1px solid rgba(255,255,255,.07); padding-top:24px; display:flex; align-items:center; justify-content:space-between; font-size:12px; flex-wrap:wrap; gap:12px; }
+  .footer-bottom a { color:rgba(255,255,255,.35); text-decoration:none; cursor:pointer; }
+  .footer-bottom a:hover { color:#fff; }
+
+  /* MODAL */
+  .modal-overlay { display:none; position:fixed; inset:0; z-index:2000; background:rgba(0,0,0,.7); backdrop-filter:blur(6px); align-items:center; justify-content:center; padding:20px; }
+  .modal-overlay.open { display:flex; }
+  .modal-box { background:var(--white); border-radius:var(--radius-lg); max-width:760px; width:100%; max-height:85vh; overflow-y:auto; padding:48px; position:relative; }
+  .modal-close { position:absolute; top:20px; right:20px; background:var(--light); border:none; border-radius:8px; width:36px; height:36px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background .2s; }
+  .modal-close:hover { background:var(--border); }
+  .modal-box h2 { font-family:'Oswald',sans-serif; font-size:2rem; font-weight:900; text-transform:uppercase; color:var(--dark); margin-bottom:8px; }
+  .modal-box .modal-divider { width:40px; height:3px; background:var(--red); border-radius:2px; margin-bottom:28px; }
+  .modal-box h3 { font-size:1rem; font-weight:800; color:var(--dark); margin:24px 0 8px; }
+  .modal-box p, .modal-box li { font-size:.9rem; color:var(--gray); line-height:1.8; }
+  .modal-box ul { padding-left:20px; margin-bottom:12px; }
+
+  /* FLOAT */
+  .float-btn { position:fixed; bottom:32px; right:32px; z-index:500; width:58px; height:58px; border-radius:50%; background:var(--red); display:flex; align-items:center; justify-content:center; box-shadow:0 8px 28px var(--red-glow); transition:transform .2s, box-shadow .2s; }
+  .float-btn:hover { transform:scale(1.1); box-shadow:0 14px 40px var(--red-glow); }
+  .float-btn svg { width:24px; height:24px; color:#fff; }
+
+  /* RESPONSIVE */
+  @media(max-width:900px) {
+    .navbar { padding:0 24px; }
+    .nav-logo { margin-left:-24px; padding:10px 20px 10px 24px; }
+    .nav-links { display:none; }
+    .hamburger { display:flex; }
+    .hero-cand { padding:110px 32px 70px; }
+    section { padding:60px 32px; }
+    .candidatez-layout { grid-template-columns:1fr; gap:40px; }
+    .form-row { grid-template-columns:1fr; }
+    .candidatez-form { padding:28px 20px; }
+    .footer-grid { grid-template-columns:1fr 1fr; gap:36px; }
+  }
+  @media(max-width:600px) {
+    .hero-cand { padding:100px 20px 60px; }
+    section { padding:50px 20px; }
+    .postes-grid { grid-template-columns:1fr; }
+    .footer-grid { grid-template-columns:1fr; gap:28px; }
+    footer { padding:40px 20px 20px; }
+    .modal-box { padding:28px 20px; }
+  }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <a class="nav-logo" href="index.html">
+    <img src="Stela-Fini1.png" style="height:48px;width:auto;" alt="STELA" />
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html#services">Services</a></li>
+    <li><a href="index.html#clients">Références</a></li>
+    <li><a href="index.html#about">À propos</a></li>
+    <li><a href="index.html#temoignages">Avis</a></li>
+    <li><a href="candidater.html" style="color:#fff;">Candidatez</a></li>
+    <li><a href="index.html#contact" class="cta-btn">Devis gratuit</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html#services" onclick="closeMenu()">Services</a>
+  <a href="index.html#clients" onclick="closeMenu()">Références</a>
+  <a href="index.html#about" onclick="closeMenu()">À propos</a>
+  <a href="index.html#temoignages" onclick="closeMenu()">Avis</a>
+  <a href="candidater.html" onclick="closeMenu()">Candidatez</a>
+  <a href="index.html#contact" class="cta-btn" onclick="closeMenu()">Devis gratuit</a>
+</div>
+
+<!-- HERO -->
+<div class="hero-cand">
+  <div class="hero-cand-line"></div>
+  <div class="hero-cand-content">
+    <div class="hero-eyebrow">
+      <div class="hero-eyebrow-dot"></div>
+      <span>Recrutement</span>
+    </div>
+    <h1>Rejoignez<br/><span>l'équipe STELA</span></h1>
+    <p>Vous êtes chauffeur professionnel ou souhaitez évoluer dans le transport routier ? Nous recrutons des collaborateurs motivés et sérieux.</p>
+  </div>
+</div>
+
+<!-- SECTION CANDIDATEZ -->
+<section id="candidatez">
+  <div class="candidatez-container">
+    <div class="candidatez-layout">
+      <div class="candidatez-left">
+        <div class="section-label reveal">Postes ouverts</div>
+        <h2 class="section-title reveal delay-1">Nos <span>offres</span></h2>
+        <p class="reveal delay-2">Nous cherchons des collaborateurs sérieux pour accompagner notre croissance sur toute la France.</p>
+
+        <div class="postes-grid reveal delay-3">
+          <div class="poste-card">
+            <div class="poste-card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            </div>
+            <div>
+              <h4>Chauffeur PL</h4>
+              <p>Permis C requis</p>
+            </div>
+          </div>
+          <div class="poste-card">
+            <div class="poste-card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11a2 2 0 012 2v3"/><rect x="9" y="11" width="14" height="10" rx="1"/><circle cx="12" cy="21" r="1"/><circle cx="20" cy="21" r="1"/></svg>
+            </div>
+            <div>
+              <h4>Chauffeur SPL</h4>
+              <p>Permis CE requis</p>
+            </div>
+          </div>
+          <div class="poste-card">
+            <div class="poste-card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+            </div>
+            <div>
+              <h4>Affréteur</h4>
+              <p>Logistique & négo</p>
+            </div>
+          </div>
+          <div class="poste-card">
+            <div class="poste-card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+            </div>
+            <div>
+              <h4>Candidature libre</h4>
+              <p>Tout profil motivé</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="candidatez-avantages reveal delay-4">
+          <h4>Ce que nous offrons</h4>
+          <ul class="avantage-list">
+            <li>Véhicules récents et bien entretenus</li>
+            <li>Structure à taille humaine, ambiance sérieuse</li>
+            <li>Tournées régulières sur toute la France</li>
+            <li>Rémunération compétitive selon profil</li>
+            <li>Disponibilité et réactivité de la direction</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="candidatez-form reveal-right">
+        <h3>Déposez votre candidature</h3>
+        <form id="candidatureForm" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="c-nom">Nom complet <span style="color:var(--red)">*</span></label>
+              <input type="text" id="c-nom" placeholder="Prénom Nom" />
+              <div class="field-error" id="err-c-nom">Ce champ est obligatoire.</div>
+            </div>
+            <div class="form-group">
+              <label for="c-tel">Téléphone <span style="color:var(--red)">*</span></label>
+              <input type="tel" id="c-tel" placeholder="06 XX XX XX XX" />
+              <div class="field-error" id="err-c-tel">Ce champ est obligatoire.</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="c-email">Email <span style="color:var(--red)">*</span></label>
+            <input type="email" id="c-email" placeholder="votre@email.com" />
+            <div class="field-error" id="err-c-email">Veuillez saisir un email valide.</div>
+          </div>
+          <div class="form-group">
+            <label for="c-poste">Poste souhaité <span style="color:var(--red)">*</span></label>
+            <select id="c-poste">
+              <option value="">— Choisir un poste —</option>
+              <option>Chauffeur PL (Permis C)</option>
+              <option>Chauffeur SPL (Permis CE)</option>
+              <option>Affréteur / Exploitant transport</option>
+              <option>Candidature spontanée</option>
+            </select>
+            <div class="field-error" id="err-c-poste">Veuillez sélectionner un poste.</div>
+          </div>
+          <div class="form-group">
+            <label for="c-permis">Permis & habilitations</label>
+            <input type="text" id="c-permis" placeholder="Ex : Permis C, FIMO, carte conducteur…" />
+          </div>
+          <div class="form-group">
+            <label for="c-message">Parlez-nous de vous</label>
+            <textarea id="c-message" placeholder="Expérience, disponibilité, motivation…"></textarea>
+          </div>
+          <button type="submit" class="btn-red" style="width:100%;justify-content:center;padding:16px;font-size:15px;">
+            Envoyer ma candidature
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+          <div class="form-success" id="candidatureSuccess">
+            ✅ Votre candidature a bien été envoyée ! Nous vous recontacterons rapidement.
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a class="footer-logo-wrap" href="index.html">
+        <img src="logo.png" alt="STELA" onerror="this.style.display='none'" />
+        <div class="footer-logo-name">S<em>T</em>ELA</div>
+      </a>
+      <div class="footer-divider"></div>
+      <p>SASU spécialisée dans le transport routier de fret interurbain. Basés à Toulouse, nous livrons ce que nos clients promettent — partout en France.</p>
+      <div class="footer-siret">
+        SIRET : <strong>900 822 271 00012</strong> · APE <strong>4941A</strong><br/>
+        Capital : <strong>50 000 €</strong> · Dirigeant : <strong>Yassin Mahamad Ali</strong>
+      </div>
+    </div>
+    <div>
+      <h4>Navigation</h4>
+      <ul>
+        <li><a href="index.html">Accueil</a></li>
+        <li><a href="index.html#services">Nos services</a></li>
+        <li><a href="index.html#clients">Références</a></li>
+        <li><a href="index.html#about">À propos</a></li>
+        <li><a href="index.html#temoignages">Avis clients</a></li>
+        <li><a href="candidater.html">Candidatez</a></li>
+        <li><a href="index.html#contact">Contact & devis</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Services</h4>
+      <ul>
+        <li><a href="index.html#services">Transport de marchandises</a></li>
+        <li><a href="index.html#services">Location avec chauffeur</a></li>
+        <li><a href="index.html#services">Affrètement</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="tel:0610305067">06 10 30 50 67</a></li>
+        <li><a href="mailto:stmtransports@yahoo.com">stmtransports@yahoo.com</a></li>
+        <li><a href="index.html#contact">Toulouse, 31</a></li>
+        <li><a href="index.html#contact">Disponible 7j/7</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 STELA — SASU · SIRET 900 822 271 00012 — Tous droits réservés</span>
+    <div style="display:flex;gap:20px;">
+      <a onclick="document.getElementById('modalLegal').classList.add('open')">Mentions légales</a>
+      <a onclick="document.getElementById('modalRgpd').classList.add('open')">Politique de confidentialité</a>
+    </div>
+  </div>
+</footer>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modalLegal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="document.getElementById('modalLegal').classList.remove('open')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <h2>Mentions légales</h2>
+    <div class="modal-divider"></div>
+    <h3>Éditeur du site</h3>
+    <p><strong>S T E L A</strong> — SASU · Capital : 50 000 € · SIRET : 900 822 271 00012 · APE : 4941A<br/>
+    Siège : 12 rue Paul Gauguin, 31100 Toulouse · Dirigeant : Yassin Mahamad Ali<br/>
+    Email : stmtransports@yahoo.com · Tél : 06 10 30 50 67</p>
+    <h3>Hébergement</h3>
+    <p>Netlify, Inc., 512 2nd Street, Suite 200, San Francisco, CA 94107, États-Unis.</p>
+  </div>
+</div>
+<div class="modal-overlay" id="modalRgpd">
+  <div class="modal-box">
+    <button class="modal-close" onclick="document.getElementById('modalRgpd').classList.remove('open')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <h2>Politique de confidentialité</h2>
+    <div class="modal-divider"></div>
+    <h3>Responsable du traitement</h3>
+    <p>S T E L A — Yassin Mahamad Ali — stmtransports@yahoo.com</p>
+    <h3>Données collectées</h3>
+    <p>Nom, téléphone, email, poste souhaité, message. Utilisés uniquement pour répondre à votre candidature.</p>
+    <h3>Vos droits</h3>
+    <p>Droit d'accès, de rectification et d'effacement : stmtransports@yahoo.com</p>
+  </div>
+</div>
+
+<a class="float-btn" href="tel:0610305067" title="Appeler STELA">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.82 19.79 19.79 0 01.08 1.22 2 2 0 012.08 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+</a>
+
+<script>
+window.addEventListener('scroll', function() {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
+});
+
+var hamburger = document.getElementById('hamburger');
+var mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', function() {
+  hamburger.classList.toggle('open');
+  mobileMenu.classList.toggle('open');
+});
+function closeMenu() { hamburger.classList.remove('open'); mobileMenu.classList.remove('open'); }
+
+document.querySelectorAll('.modal-overlay').forEach(function(m) {
+  m.addEventListener('click', function(e) { if (e.target === m) m.classList.remove('open'); });
+});
+
+var revealEls = document.querySelectorAll('.reveal, .reveal-right');
+(function(obs){ revealEls.forEach(function(el){ obs.observe(el); }); })(new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 }));
+
+/* Formulaire candidature */
+['c-nom','c-tel','c-email','c-poste'].forEach(function(id) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.addEventListener('input',  function() { clearErrC(id); });
+  el.addEventListener('change', function() { clearErrC(id); });
+});
+function clearErrC(id) {
+  var el  = document.getElementById(id);
+  var err = document.getElementById('err-' + id);
+  if (el) el.classList.remove('invalid');
+  if (err) err.classList.remove('visible');
+}
+function showErrC(id) {
+  var el  = document.getElementById(id);
+  var err = document.getElementById('err-' + id);
+  if (el) el.classList.add('invalid');
+  if (err) err.classList.add('visible');
+}
+document.getElementById('candidatureForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  var nom   = document.getElementById('c-nom').value.trim();
+  var tel   = document.getElementById('c-tel').value.trim();
+  var email = document.getElementById('c-email').value.trim();
+  var poste = document.getElementById('c-poste').value;
+  var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  var valid = true;
+  if (!nom)     { showErrC('c-nom');   valid = false; }
+  if (!tel)     { showErrC('c-tel');   valid = false; }
+  if (!emailOk) { showErrC('c-email'); valid = false; }
+  if (!poste)   { showErrC('c-poste'); valid = false; }
+  if (!valid) {
+    var first = document.querySelector('.invalid');
+    if (first) first.scrollIntoView({ behavior:'smooth', block:'center' });
+    return;
+  }
+  var permis  = document.getElementById('c-permis').value.trim();
+  var message = document.getElementById('c-message').value.trim();
+  var s = encodeURIComponent;
+  var subject = s('Candidature STELA — ' + poste + ' — ' + nom);
+  var body = s('Nom : ' + nom + '\nTéléphone : ' + tel + '\nEmail : ' + email + '\nPoste : ' + poste + '\nPermis : ' + (permis || 'Non précisé') + '\nMessage : ' + (message || 'Aucun'));
+  window.location.href = 'mailto:stmtransports@yahoo.com?subject=' + subject + '&body=' + body;
+  document.getElementById('candidatureSuccess').classList.add('visible');
+  this.reset();
+});
+</script>
+</body>
+</html>
