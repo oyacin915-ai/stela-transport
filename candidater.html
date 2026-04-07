@@ -130,6 +130,9 @@
   .field-error.visible { display:block; }
   .form-success { display:none; background:#f0fff6; border:1.5px solid #22c55e; border-radius:8px; padding:18px 20px; margin-top:16px; color:#15803d; font-weight:700; font-size:.93rem; text-align:center; }
   .form-success.visible { display:block; }
+  .cv-upload-btn { display:flex; align-items:center; gap:10px; width:100%; padding:13px 16px; border:1.5px dashed var(--border); border-radius:8px; background:var(--light); color:var(--gray); font-size:14px; font-weight:500; cursor:pointer; transition:border-color .2s, background .2s; font-family:'Poppins',sans-serif; }
+  .cv-upload-btn:hover { border-color:var(--red); background:#fff8f8; color:var(--dark); }
+  .cv-upload-btn.has-file { border-color:#22c55e; background:#f0fff6; color:#15803d; border-style:solid; }
 
   /* FOOTER */
   footer { background:var(--dark); color:rgba(255,255,255,.55); padding:72px 60px 32px; }
@@ -291,27 +294,33 @@
 
       <div class="candidatez-form reveal-right">
         <h3>Déposez votre candidature</h3>
-        <form id="candidatureForm" novalidate>
+        <form id="candidatureForm" action="https://formsubmit.co/stmtransports@yahoo.com" method="POST" enctype="multipart/form-data" novalidate>
+          <!-- Formsubmit config -->
+          <input type="hidden" name="_subject" value="Nouvelle candidature STELA" />
+          <input type="hidden" name="_captcha" value="false" />
+          <input type="hidden" name="_template" value="table" />
+          <input type="hidden" name="_next" value="https://oyacin915-ai.github.io/stela-transport/candidater.html?merci=1" />
+
           <div class="form-row">
             <div class="form-group">
               <label for="c-nom">Nom complet <span style="color:var(--red)">*</span></label>
-              <input type="text" id="c-nom" placeholder="Prénom Nom" />
+              <input type="text" id="c-nom" name="Nom" placeholder="Prénom Nom" required />
               <div class="field-error" id="err-c-nom">Ce champ est obligatoire.</div>
             </div>
             <div class="form-group">
               <label for="c-tel">Téléphone <span style="color:var(--red)">*</span></label>
-              <input type="tel" id="c-tel" placeholder="06 XX XX XX XX" />
+              <input type="tel" id="c-tel" name="Téléphone" placeholder="06 XX XX XX XX" required />
               <div class="field-error" id="err-c-tel">Ce champ est obligatoire.</div>
             </div>
           </div>
           <div class="form-group">
             <label for="c-email">Email <span style="color:var(--red)">*</span></label>
-            <input type="email" id="c-email" placeholder="votre@email.com" />
+            <input type="email" id="c-email" name="Email" placeholder="votre@email.com" required />
             <div class="field-error" id="err-c-email">Veuillez saisir un email valide.</div>
           </div>
           <div class="form-group">
             <label for="c-poste">Poste souhaité <span style="color:var(--red)">*</span></label>
-            <select id="c-poste">
+            <select id="c-poste" name="Poste" required>
               <option value="">— Choisir un poste —</option>
               <option>Chauffeur PL (Permis C)</option>
               <option>Chauffeur SPL (Permis CE)</option>
@@ -322,11 +331,22 @@
           </div>
           <div class="form-group">
             <label for="c-permis">Permis & habilitations</label>
-            <input type="text" id="c-permis" placeholder="Ex : Permis C, FIMO, carte conducteur…" />
+            <input type="text" id="c-permis" name="Permis" placeholder="Ex : Permis C, FIMO, carte conducteur…" />
           </div>
           <div class="form-group">
             <label for="c-message">Parlez-nous de vous</label>
-            <textarea id="c-message" placeholder="Expérience, disponibilité, motivation…"></textarea>
+            <textarea id="c-message" name="Message" placeholder="Expérience, disponibilité, motivation…"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="c-cv">CV <span style="color:var(--red)">*</span></label>
+            <div class="cv-upload-wrap" id="cvWrap">
+              <input type="file" id="c-cv" name="CV" accept=".pdf,.doc,.docx" required style="display:none;" />
+              <label for="c-cv" class="cv-upload-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <span id="cvLabel">Choisir un fichier (PDF, Word)</span>
+              </label>
+            </div>
+            <div class="field-error" id="err-c-cv">Veuillez joindre votre CV.</div>
           </div>
           <button type="submit" class="btn-red" style="width:100%;justify-content:center;padding:16px;font-size:15px;">
             Envoyer ma candidature
@@ -453,7 +473,27 @@ var revealEls = document.querySelectorAll('.reveal, .reveal-right');
   entries.forEach(function(e) { if (e.isIntersecting) e.target.classList.add('visible'); });
 }, { threshold: 0.1 }));
 
-/* Formulaire candidature */
+/* Affichage nom fichier CV */
+document.getElementById('c-cv').addEventListener('change', function() {
+  var label = document.getElementById('cvLabel');
+  var btn = document.querySelector('.cv-upload-btn');
+  if (this.files && this.files[0]) {
+    label.textContent = this.files[0].name;
+    btn.classList.add('has-file');
+    document.getElementById('err-c-cv').classList.remove('visible');
+  } else {
+    label.textContent = 'Choisir un fichier (PDF, Word)';
+    btn.classList.remove('has-file');
+  }
+});
+
+/* Message de succès si redirigé avec ?merci=1 */
+if (window.location.search.indexOf('merci=1') !== -1) {
+  document.getElementById('candidatureSuccess').classList.add('visible');
+  document.getElementById('candidatureSuccess').scrollIntoView({ behavior:'smooth', block:'center' });
+}
+
+/* Validation avant envoi */
 ['c-nom','c-tel','c-email','c-poste'].forEach(function(id) {
   var el = document.getElementById(id);
   if (!el) return;
@@ -473,30 +513,26 @@ function showErrC(id) {
   if (err) err.classList.add('visible');
 }
 document.getElementById('candidatureForm').addEventListener('submit', function(e) {
-  e.preventDefault();
   var nom   = document.getElementById('c-nom').value.trim();
   var tel   = document.getElementById('c-tel').value.trim();
   var email = document.getElementById('c-email').value.trim();
   var poste = document.getElementById('c-poste').value;
+  var cv    = document.getElementById('c-cv').files;
   var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   var valid = true;
   if (!nom)     { showErrC('c-nom');   valid = false; }
   if (!tel)     { showErrC('c-tel');   valid = false; }
   if (!emailOk) { showErrC('c-email'); valid = false; }
   if (!poste)   { showErrC('c-poste'); valid = false; }
-  if (!valid) {
-    var first = document.querySelector('.invalid');
-    if (first) first.scrollIntoView({ behavior:'smooth', block:'center' });
-    return;
+  if (!cv || cv.length === 0) {
+    document.getElementById('err-c-cv').classList.add('visible');
+    valid = false;
   }
-  var permis  = document.getElementById('c-permis').value.trim();
-  var message = document.getElementById('c-message').value.trim();
-  var s = encodeURIComponent;
-  var subject = s('Candidature STELA — ' + poste + ' — ' + nom);
-  var body = s('Nom : ' + nom + '\nTéléphone : ' + tel + '\nEmail : ' + email + '\nPoste : ' + poste + '\nPermis : ' + (permis || 'Non précisé') + '\nMessage : ' + (message || 'Aucun'));
-  window.location.href = 'mailto:stmtransports@yahoo.com?subject=' + subject + '&body=' + body;
-  document.getElementById('candidatureSuccess').classList.add('visible');
-  this.reset();
+  if (!valid) {
+    e.preventDefault();
+    var first = document.querySelector('.invalid, .field-error.visible');
+    if (first) first.scrollIntoView({ behavior:'smooth', block:'center' });
+  }
 });
 </script>
 </body>
