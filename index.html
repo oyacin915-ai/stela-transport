@@ -62,9 +62,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
-  <!-- EmailJS — remplacez YOUR_PUBLIC_KEY par votre clé sur emailjs.com (compte gratuit) -->
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-  <script>emailjs.init("YOUR_PUBLIC_KEY");</script>
 
   <style>
   /* ══════════════════════════════════════════════════════
@@ -1388,25 +1385,31 @@ form.addEventListener('submit', function(e) {
   btn.textContent = 'Envoi en cours…';
   btn.disabled = true;
 
-  /* ── EmailJS ──
-     Remplacez 'YOUR_SERVICE_ID' et 'YOUR_TEMPLATE_ID' après création de votre compte emailjs.com
-     Le template doit contenir les variables : {{nom}} {{telephone}} {{email}} {{depart}} {{arrivee}} {{prestation}} {{description}}
-  */
-  emailjs.sendForm('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', form)
-    .then(function() {
-      form.reset();
-      document.getElementById('formSuccess').classList.add('visible');
-      btn.textContent = 'Envoyer ma demande';
-      btn.disabled = false;
-    }, function() {
-      /* Fallback : mailto si EmailJS non configuré */
-      var s = encodeURIComponent;
-      var subject = s('Demande de devis STELA — ' + nom);
-      var body = s('Nom / Société : ' + nom + '\nTéléphone : ' + tel + '\nEmail : ' + email + '\nDépart : ' + depart + '\nArrivée : ' + arrivee + '\nPrestation : ' + prestation + '\nMessage : ' + document.getElementById('description').value);
-      window.location.href = 'mailto:stmtransports@yahoo.com?subject=' + subject + '&body=' + body;
-      btn.textContent = 'Envoyer ma demande';
-      btn.disabled = false;
-    });
+  fetch('https://formsubmit.co/ajax/stmtransports@yahoo.com', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify({
+      _subject: 'Devis STELA — ' + nom,
+      nom: nom,
+      telephone: tel,
+      email: email,
+      depart: depart,
+      arrivee: arrivee,
+      prestation: prestation,
+      description: document.getElementById('description').value.trim() || '—'
+    })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function() {
+    form.reset();
+    document.getElementById('formSuccess').classList.add('visible');
+    btn.textContent = 'Envoyer ma demande';
+    btn.disabled = false;
+  })
+  .catch(function() {
+    btn.textContent = 'Erreur — réessayez';
+    btn.disabled = false;
+  });
 });
 
 /* ── Formulaire candidature : validation + mailto ── */
@@ -1448,14 +1451,36 @@ candidatureForm.addEventListener('submit', function(e) {
     return;
   }
 
-  var permis  = document.getElementById('c-permis').value.trim();
-  var message = document.getElementById('c-message').value.trim();
-  var s = encodeURIComponent;
-  var subject = s('Candidature STELA — ' + poste + ' — ' + nom);
-  var body = s('Nom : ' + nom + '\nTéléphone : ' + tel + '\nEmail : ' + email + '\nPoste souhaité : ' + poste + '\nPermis / habilitations : ' + (permis || 'Non précisé') + '\nMessage : ' + (message || 'Aucun'));
-  window.location.href = 'mailto:stmtransports@yahoo.com?subject=' + subject + '&body=' + body;
-  document.getElementById('candidatureSuccess').classList.add('visible');
-  candidatureForm.reset();
+  var permis  = document.getElementById('c-permis') ? document.getElementById('c-permis').value.trim() : '';
+  var message = document.getElementById('c-message') ? document.getElementById('c-message').value.trim() : '';
+  var btnC = candidatureForm.querySelector('button[type=submit]');
+  btnC.textContent = 'Envoi en cours…';
+  btnC.disabled = true;
+
+  fetch('https://formsubmit.co/ajax/stmtransports@yahoo.com', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify({
+      _subject: 'Candidature STELA — ' + poste + ' — ' + nom,
+      nom: nom,
+      telephone: tel,
+      email: email,
+      poste: poste,
+      permis: permis || 'Non précisé',
+      message: message || 'Aucun message'
+    })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function() {
+    document.getElementById('candidatureSuccess').classList.add('visible');
+    candidatureForm.reset();
+    btnC.textContent = 'Envoyer ma candidature';
+    btnC.disabled = false;
+  })
+  .catch(function() {
+    btnC.textContent = 'Erreur — réessayez';
+    btnC.disabled = false;
+  });
 });
 </script>
 </body>
