@@ -549,7 +549,7 @@ document.getElementById('candidatureForm').addEventListener('submit', async func
       headers: { 'Accept': 'application/json' }
     });
     var json = await res.json();
-    if (json.success) {
+    if (json.ok) {
       document.getElementById('candidatureSuccess').classList.add('visible');
       document.getElementById('candidatureSuccess').scrollIntoView({ behavior:'smooth', block:'center' });
       this.reset();
