@@ -301,10 +301,7 @@
 
       <div class="candidatez-form reveal-right">
         <h3>Déposez votre candidature</h3>
-        <form id="candidatureForm" novalidate>
-          <input type="hidden" name="_subject" value="Nouvelle candidature STELA" />
-          <input type="hidden" name="_captcha" value="false" />
-          <input type="hidden" name="_template" value="table" />
+        <form id="candidatureForm" action="https://forminit.com/f/1yz995hgyha" method="POST" enctype="multipart/form-data" novalidate>
 
           <div class="form-row">
             <div class="form-group">
@@ -515,9 +512,8 @@ function showErrC(id) {
   if (err) err.classList.add('visible');
 }
 
-/* Envoi AJAX via FormSubmit */
-document.getElementById('candidatureForm').addEventListener('submit', async function(e) {
-  e.preventDefault();
+/* Validation puis submit natif (redirection Forminit) */
+document.getElementById('candidatureForm').addEventListener('submit', function(e) {
   var nom   = document.getElementById('c-nom').value.trim();
   var tel   = document.getElementById('c-tel').value.trim();
   var email = document.getElementById('c-email').value.trim();
@@ -531,45 +527,16 @@ document.getElementById('candidatureForm').addEventListener('submit', async func
   if (!poste)   { showErrC('c-poste'); valid = false; }
   if (!cv || cv.length === 0) { document.getElementById('err-c-cv').classList.add('visible'); valid = false; }
   if (!valid) {
+    e.preventDefault();
     var first = document.querySelector('.invalid, .field-error.visible');
     if (first) first.scrollIntoView({ behavior:'smooth', block:'center' });
     return;
   }
-
-  var btn = document.getElementById('submitBtn');
-  btn.disabled = true;
-  btn.textContent = 'Envoi en cours…';
-  document.getElementById('candidatureError').style.display = 'none';
-
-  try {
-    var formData = new FormData(this);
-    var res = await fetch('https://forminit.com/f/1yz995hgyha', {
-      method: 'POST',
-      body: formData,
-      headers: { 'Accept': 'application/json' }
-    });
-    var json = await res.json();
-    console.log('Forminit status:', res.status, json);
-    if (res.ok && (json.ok || json.success || json.status === 'success')) {
-      document.getElementById('candidatureSuccess').classList.add('visible');
-      document.getElementById('candidatureSuccess').scrollIntoView({ behavior:'smooth', block:'center' });
-      this.reset();
-      document.getElementById('cvLabel').textContent = 'Choisir un fichier (PDF, Word)';
-      document.querySelector('.cv-upload-btn').classList.remove('has-file');
-    } else {
-      var errMsg = (json.errors || []).map(function(e){ return e.message || e.field; }).join(', ') || ('HTTP ' + res.status);
-      throw new Error(errMsg);
-    }
-  } catch(err) {
-    var errDiv = document.getElementById('candidatureError');
-    errDiv.innerHTML = '❌ Erreur : ' + (err.message || 'inconnue') + ' — Réessayez ou contactez-nous par email.';
-    errDiv.style.display = 'block';
-    errDiv.scrollIntoView({ behavior:'smooth', block:'center' });
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = 'Envoyer ma candidature <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
-  }
+  document.getElementById('submitBtn').disabled = true;
+  document.getElementById('submitBtn').textContent = 'Envoi en cours…';
 });
+
+/* Message succès si retour depuis Forminit avec ?merci=1 */
 </script>
 </body>
 </html>
