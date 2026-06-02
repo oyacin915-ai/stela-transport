@@ -301,12 +301,10 @@
 
       <div class="candidatez-form reveal-right">
         <h3>Déposez votre candidature</h3>
-        <form id="candidatureForm" action="https://formsubmit.co/stmtransports@yahoo.com" method="POST" enctype="multipart/form-data" novalidate>
-          <!-- Formsubmit config -->
+        <form id="candidatureForm" novalidate>
           <input type="hidden" name="_subject" value="Nouvelle candidature STELA" />
           <input type="hidden" name="_captcha" value="false" />
           <input type="hidden" name="_template" value="table" />
-          <input type="hidden" name="_next" value="https://stela-transport.fr/candidater.html?merci=1" />
 
           <div class="form-row">
             <div class="form-group">
@@ -355,12 +353,15 @@
             </div>
             <div class="field-error" id="err-c-cv">Veuillez joindre votre CV.</div>
           </div>
-          <button type="submit" class="btn-red" style="width:100%;justify-content:center;padding:16px;font-size:15px;">
+          <button type="submit" id="submitBtn" class="btn-red" style="width:100%;justify-content:center;padding:16px;font-size:15px;">
             Envoyer ma candidature
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </button>
           <div class="form-success" id="candidatureSuccess">
             ✅ Votre candidature a bien été envoyée ! Nous vous recontacterons rapidement.
+          </div>
+          <div id="candidatureError" style="display:none;background:#fff8f8;border:1.5px solid #dc2626;border-radius:8px;padding:14px 18px;margin-top:12px;color:#dc2626;font-weight:600;font-size:.88rem;text-align:center;">
+            ❌ Erreur lors de l'envoi. Réessayez ou contactez-nous par email.
           </div>
         </form>
       </div>
@@ -494,13 +495,7 @@ document.getElementById('c-cv').addEventListener('change', function() {
   }
 });
 
-/* Message de succès si redirigé avec ?merci=1 */
-if (window.location.search.indexOf('merci=1') !== -1) {
-  document.getElementById('candidatureSuccess').classList.add('visible');
-  document.getElementById('candidatureSuccess').scrollIntoView({ behavior:'smooth', block:'center' });
-}
-
-/* Validation avant envoi */
+/* Validation inline */
 ['c-nom','c-tel','c-email','c-poste'].forEach(function(id) {
   var el = document.getElementById(id);
   if (!el) return;
@@ -519,7 +514,10 @@ function showErrC(id) {
   if (el) el.classList.add('invalid');
   if (err) err.classList.add('visible');
 }
-document.getElementById('candidatureForm').addEventListener('submit', function(e) {
+
+/* Envoi AJAX via FormSubmit */
+document.getElementById('candidatureForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
   var nom   = document.getElementById('c-nom').value.trim();
   var tel   = document.getElementById('c-tel').value.trim();
   var email = document.getElementById('c-email').value.trim();
@@ -531,14 +529,41 @@ document.getElementById('candidatureForm').addEventListener('submit', function(e
   if (!tel)     { showErrC('c-tel');   valid = false; }
   if (!emailOk) { showErrC('c-email'); valid = false; }
   if (!poste)   { showErrC('c-poste'); valid = false; }
-  if (!cv || cv.length === 0) {
-    document.getElementById('err-c-cv').classList.add('visible');
-    valid = false;
-  }
+  if (!cv || cv.length === 0) { document.getElementById('err-c-cv').classList.add('visible'); valid = false; }
   if (!valid) {
-    e.preventDefault();
     var first = document.querySelector('.invalid, .field-error.visible');
     if (first) first.scrollIntoView({ behavior:'smooth', block:'center' });
+    return;
+  }
+
+  var btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Envoi en cours…';
+  document.getElementById('candidatureError').style.display = 'none';
+
+  try {
+    var formData = new FormData(this);
+    var res = await fetch('https://formsubmit.co/ajax/stmtransports@yahoo.com', {
+      method: 'POST',
+      body: formData,
+      headers: { 'Accept': 'application/json' }
+    });
+    var json = await res.json();
+    if (json.success) {
+      document.getElementById('candidatureSuccess').classList.add('visible');
+      document.getElementById('candidatureSuccess').scrollIntoView({ behavior:'smooth', block:'center' });
+      this.reset();
+      document.getElementById('cvLabel').textContent = 'Choisir un fichier (PDF, Word)';
+      document.querySelector('.cv-upload-btn').classList.remove('has-file');
+    } else {
+      throw new Error('Échec');
+    }
+  } catch(err) {
+    document.getElementById('candidatureError').style.display = 'block';
+    document.getElementById('candidatureError').scrollIntoView({ behavior:'smooth', block:'center' });
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = 'Envoyer ma candidature <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
   }
 });
 </script>
