@@ -541,19 +541,7 @@ document.getElementById('candidatureForm').addEventListener('submit', async func
   document.getElementById('candidatureError').style.display = 'none';
 
   try {
-    /* 1. Upload CV sur file.io */
-    var cvLien = 'Non fourni';
-    if (cvFiles[0]) {
-      btn.textContent = 'Upload du CV…';
-      var fd = new FormData();
-      fd.append('file', cvFiles[0]);
-      var fu = await fetch('https://file.io/?expires=14d', { method: 'POST', body: fd });
-      var fj = await fu.json();
-      if (fj.success && fj.link) cvLien = fj.link;
-    }
-
-    /* 2. Envoyer les données via Web3Forms */
-    btn.textContent = 'Envoi en cours…';
+    /* Envoyer données + CV directement via Web3Forms */
     var wd = new FormData();
     wd.append('access_key', '6073bc17-d934-4f5a-a6b8-38ada19eaef1');
     wd.append('subject', 'Nouvelle candidature STELA — ' + nom);
@@ -564,7 +552,7 @@ document.getElementById('candidatureForm').addEventListener('submit', async func
     wd.append('Poste souhaité', poste);
     if (permis)  wd.append('Permis / habilitations', permis);
     if (message) wd.append('Message', message);
-    wd.append('CV (lien téléchargement 14j)', cvLien);
+    if (cvFiles[0]) wd.append('attachment', cvFiles[0]);
 
     var wr = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: wd });
     var wj = await wr.json();
