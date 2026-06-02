@@ -301,7 +301,7 @@
 
       <div class="candidatez-form reveal-right">
         <h3>Déposez votre candidature</h3>
-        <form id="candidatureForm" action="https://forminit.com/f/1yz995hgyha" method="POST" enctype="multipart/form-data" novalidate>
+        <form id="candidatureForm" novalidate>
 
           <div class="form-row">
             <div class="form-group">
@@ -512,31 +512,83 @@ function showErrC(id) {
   if (err) err.classList.add('visible');
 }
 
-/* Validation puis submit natif (redirection Forminit) */
-document.getElementById('candidatureForm').addEventListener('submit', function(e) {
-  var nom   = document.getElementById('c-nom').value.trim();
-  var tel   = document.getElementById('c-tel').value.trim();
-  var email = document.getElementById('c-email').value.trim();
-  var poste = document.getElementById('c-poste').value;
-  var cv    = document.getElementById('c-cv').files;
+/* Envoi : upload CV → file.io, puis données → Web3Forms */
+document.getElementById('candidatureForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  var nom     = document.getElementById('c-nom').value.trim();
+  var tel     = document.getElementById('c-tel').value.trim();
+  var email   = document.getElementById('c-email').value.trim();
+  var poste   = document.getElementById('c-poste').value;
+  var permis  = document.getElementById('c-permis').value.trim();
+  var message = document.getElementById('c-message').value.trim();
+  var cvFiles = document.getElementById('c-cv').files;
   var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   var valid = true;
   if (!nom)     { showErrC('c-nom');   valid = false; }
   if (!tel)     { showErrC('c-tel');   valid = false; }
   if (!emailOk) { showErrC('c-email'); valid = false; }
   if (!poste)   { showErrC('c-poste'); valid = false; }
-  if (!cv || cv.length === 0) { document.getElementById('err-c-cv').classList.add('visible'); valid = false; }
+  if (!cvFiles || cvFiles.length === 0) { document.getElementById('err-c-cv').classList.add('visible'); valid = false; }
   if (!valid) {
-    e.preventDefault();
     var first = document.querySelector('.invalid, .field-error.visible');
     if (first) first.scrollIntoView({ behavior:'smooth', block:'center' });
     return;
   }
-  document.getElementById('submitBtn').disabled = true;
-  document.getElementById('submitBtn').textContent = 'Envoi en cours…';
+
+  var btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Envoi en cours…';
+  document.getElementById('candidatureError').style.display = 'none';
+
+  try {
+    /* 1. Upload CV sur file.io */
+    var cvLien = 'Non fourni';
+    if (cvFiles[0]) {
+      btn.textContent = 'Upload du CV…';
+      var fd = new FormData();
+      fd.append('file', cvFiles[0]);
+      var fu = await fetch('https://file.io/?expires=14d', { method: 'POST', body: fd });
+      var fj = await fu.json();
+      if (fj.success && fj.link) cvLien = fj.link;
+    }
+
+    /* 2. Envoyer les données via Web3Forms */
+    btn.textContent = 'Envoi en cours…';
+    var wd = new FormData();
+    wd.append('access_key', '6073bc17-d934-4f5a-a6b8-38ada19eaef1');
+    wd.append('subject', 'Nouvelle candidature STELA — ' + nom);
+    wd.append('from_name', 'Formulaire STELA');
+    wd.append('Nom complet', nom);
+    wd.append('Téléphone', tel);
+    wd.append('Email candidat', email);
+    wd.append('Poste souhaité', poste);
+    if (permis)  wd.append('Permis / habilitations', permis);
+    if (message) wd.append('Message', message);
+    wd.append('CV (lien téléchargement 14j)', cvLien);
+
+    var wr = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: wd });
+    var wj = await wr.json();
+    if (wj.success) {
+      document.getElementById('candidatureSuccess').classList.add('visible');
+      document.getElementById('candidatureSuccess').scrollIntoView({ behavior:'smooth', block:'center' });
+      this.reset();
+      document.getElementById('cvLabel').textContent = 'Choisir un fichier (PDF, Word)';
+      document.querySelector('.cv-upload-btn').classList.remove('has-file');
+    } else {
+      throw new Error(wj.message || 'Erreur Web3Forms');
+    }
+  } catch(err) {
+    var errDiv = document.getElementById('candidatureError');
+    errDiv.innerHTML = '❌ Erreur : ' + (err.message || 'inconnue') + ' — Réessayez ou contactez-nous par email.';
+    errDiv.style.display = 'block';
+    errDiv.scrollIntoView({ behavior:'smooth', block:'center' });
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = 'Envoyer ma candidature <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+  }
 });
 
-/* Message succès si retour depuis Forminit avec ?merci=1 */
+/* Message succès si URL contient ?merci=1 */
 </script>
 </body>
 </html>
