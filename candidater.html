@@ -549,18 +549,22 @@ document.getElementById('candidatureForm').addEventListener('submit', async func
       headers: { 'Accept': 'application/json' }
     });
     var json = await res.json();
-    if (json.ok) {
+    console.log('Formspree status:', res.status, json);
+    if (res.ok && json.ok) {
       document.getElementById('candidatureSuccess').classList.add('visible');
       document.getElementById('candidatureSuccess').scrollIntoView({ behavior:'smooth', block:'center' });
       this.reset();
       document.getElementById('cvLabel').textContent = 'Choisir un fichier (PDF, Word)';
       document.querySelector('.cv-upload-btn').classList.remove('has-file');
     } else {
-      throw new Error('Échec');
+      var errMsg = (json.errors || []).map(function(e){ return e.message || e.field; }).join(', ') || ('HTTP ' + res.status);
+      throw new Error(errMsg);
     }
   } catch(err) {
-    document.getElementById('candidatureError').style.display = 'block';
-    document.getElementById('candidatureError').scrollIntoView({ behavior:'smooth', block:'center' });
+    var errDiv = document.getElementById('candidatureError');
+    errDiv.innerHTML = '❌ Erreur : ' + (err.message || 'inconnue') + ' — Réessayez ou contactez-nous par email.';
+    errDiv.style.display = 'block';
+    errDiv.scrollIntoView({ behavior:'smooth', block:'center' });
   } finally {
     btn.disabled = false;
     btn.innerHTML = 'Envoyer ma candidature <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
