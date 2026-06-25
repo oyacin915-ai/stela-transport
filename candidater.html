@@ -540,7 +540,16 @@ document.getElementById('candidatureForm').addEventListener('submit', function(e
   document.getElementById('submitBtn').textContent = 'Envoi en cours…';
 });
 
-/* Message succès si URL contient ?merci=1 */
+/* Affiche le message de succès si FormSubmit a redirigé avec ?merci=1 */
+if (new URLSearchParams(window.location.search).get('merci') === '1') {
+  var successBox = document.getElementById('candidatureSuccess');
+  var formEl     = document.getElementById('candidatureForm');
+  if (successBox) {
+    successBox.classList.add('visible');
+    successBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  if (formEl) formEl.style.display = 'none';
+}
 </script>
 </body>
 </html>
