@@ -1290,49 +1290,35 @@ document.querySelectorAll('.modal-overlay').forEach(function(m) {
 });
 
 /* ── Scroll Reveal ── */
-var revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
-new IntersectionObserver(function(entries) {
-  entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('visible'); } });
-}, { threshold: 0.1 }).observe
-  ? (function(obs){ revealEls.forEach(function(el){ obs.observe(el); }); })(new IntersectionObserver(function(entries) {
-      entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('visible'); } });
-    }, { threshold: 0.1 }))
-  : revealEls.forEach(function(el) { el.classList.add('visible'); });
+var revealObs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(function(el) {
+  revealObs.observe(el);
+});
 
 /* ── Compteurs animés ── */
-new IntersectionObserver(function(entries) {
+var counterObs = new IntersectionObserver(function(entries) {
   entries.forEach(function(entry) {
     if (!entry.isIntersecting) return;
-    var el = entry.target;
+    counterObs.unobserve(entry.target);
+    var el     = entry.target;
     var target = parseInt(el.getAttribute('data-target'));
     var suffix = el.getAttribute('data-suffix') || '';
     var current = 0;
-    var step = target / 80;
-    var timer = setInterval(function() {
+    var step    = target / 80;
+    var timer   = setInterval(function() {
       current += step;
       if (current >= target) { current = target; clearInterval(timer); }
       el.textContent = Math.floor(current) + suffix;
     }, 20);
   });
-}, { threshold: 0.5 }).observe
-  ? (function(obs){ document.querySelectorAll('.counter-value[data-target]').forEach(function(el){ obs.observe(el); }); })(new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (!entry.isIntersecting) return;
-        var el = entry.target;
-        var target = parseInt(el.getAttribute('data-target'));
-        var suffix = el.getAttribute('data-suffix') || '';
-        var current = 0;
-        var step = target / 80;
-        var timer = setInterval(function() {
-          current += step;
-          if (current >= target) { current = target; clearInterval(timer); }
-          el.textContent = Math.floor(current) + suffix;
-        }, 20);
-      });
-    }, { threshold: 0.5 }))
-  : null;
+}, { threshold: 0.5 });
+document.querySelectorAll('.counter-value[data-target]').forEach(function(el) {
+  counterObs.observe(el);
+});
 
-/* ── Formulaire : validation + EmailJS ── */
+/* ── Formulaire devis : validation + FormSubmit AJAX ── */
 var form = document.getElementById('devisForm');
 ['nom','tel','email','depart','arrivee','prestation'].forEach(function(id) {
   var el = document.getElementById(id);
@@ -1393,8 +1379,12 @@ form.addEventListener('submit', function(e) {
       description: document.getElementById('description').value.trim() || '—'
     })
   })
-  .then(function(r) { return r.json(); })
-  .then(function() {
+  .then(function(r) {
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+  })
+  .then(function(data) {
+    if (data.success !== 'true' && data.success !== true) throw new Error('Envoi refusé');
     form.reset();
     document.getElementById('formSuccess').classList.add('visible');
     btn.textContent = 'Envoyer ma demande';

@@ -474,10 +474,12 @@ document.querySelectorAll('.modal-overlay').forEach(function(m) {
   m.addEventListener('click', function(e) { if (e.target === m) m.classList.remove('open'); });
 });
 
-var revealEls = document.querySelectorAll('.reveal, .reveal-right');
-(function(obs){ revealEls.forEach(function(el){ obs.observe(el); }); })(new IntersectionObserver(function(entries) {
+var revealObs = new IntersectionObserver(function(entries) {
   entries.forEach(function(e) { if (e.isIntersecting) e.target.classList.add('visible'); });
-}, { threshold: 0.1 }));
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal, .reveal-right').forEach(function(el) {
+  revealObs.observe(el);
+});
 
 /* Affichage nom fichier CV */
 document.getElementById('c-cv').addEventListener('change', function() {
