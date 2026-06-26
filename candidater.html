@@ -553,12 +553,9 @@ document.getElementById('candidatureForm').addEventListener('submit', function(e
     method: 'POST',
     body: fd
   })
-  .then(function(r) {
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    return r.json();
-  })
+  .then(function(r) { return r.json(); })
   .then(function(data) {
-    if (!data.ok) throw new Error(data.error || 'Envoi refusé');
+    if (!data.ok) throw new Error(data.error || 'Erreur serveur');
     document.getElementById('candidatureForm').reset();
     var successBox = document.getElementById('candidatureSuccess');
     if (successBox) {
@@ -569,9 +566,10 @@ document.getElementById('candidatureForm').addEventListener('submit', function(e
     btn.disabled = false;
     btn.textContent = 'Envoyer ma candidature';
   })
-  .catch(function() {
-    btn.textContent = 'Erreur — réessayez';
+  .catch(function(err) {
+    btn.textContent = err && err.message ? err.message : 'Erreur — réessayez';
     btn.disabled = false;
+    setTimeout(function() { btn.textContent = 'Envoyer ma candidature'; }, 5000);
   });
 });
 </script>
