@@ -1319,6 +1319,10 @@ document.querySelectorAll('.counter-value[data-target]').forEach(function(el) {
 });
 
 /* ── Formulaire devis : validation + FormSubmit AJAX ── */
+var STELA_API = 'https://tourtrack-stela.onrender.com';
+// Ping silencieux au chargement de la page pour réveiller Render si endormi
+fetch(STELA_API + '/health', { method: 'GET' }).catch(function(){});
+
 var form = document.getElementById('devisForm');
 ['nom','tel','email','depart','arrivee','prestation'].forEach(function(id) {
   var el = document.getElementById(id);
@@ -1365,7 +1369,7 @@ form.addEventListener('submit', function(e) {
   btn.textContent = 'Envoi en cours…';
   btn.disabled = true;
 
-  fetch('https://tourtrack-stela.onrender.com/api/stela/contact', {
+  fetch(STELA_API + '/api/stela/contact', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({

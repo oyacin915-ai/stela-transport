@@ -504,6 +504,9 @@ function clearErrC(id) {
   if (el) el.classList.remove('invalid');
   if (err) err.classList.remove('visible');
 }
+var STELA_API = 'https://tourtrack-stela.onrender.com';
+fetch(STELA_API + '/health', { method: 'GET' }).catch(function(){});
+
 function showErrC(id) {
   var el  = document.getElementById(id);
   var err = document.getElementById('err-' + id);
@@ -544,7 +547,7 @@ document.getElementById('candidatureForm').addEventListener('submit', function(e
   fd.append('message', message);
   if (cvFiles.length > 0) fd.append('cv', cvFiles[0]);
 
-  fetch('https://tourtrack-stela.onrender.com/api/stela/candidature', {
+  fetch(STELA_API + '/api/stela/candidature', {
     method: 'POST',
     body: fd
   })
