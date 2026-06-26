@@ -520,6 +520,7 @@ document.getElementById('candidatureForm').addEventListener('submit', function(e
   var tel     = document.getElementById('c-tel').value.trim();
   var email   = document.getElementById('c-email').value.trim();
   var poste   = document.getElementById('c-poste').value;
+  var permis  = document.getElementById('c-permis') ? document.getElementById('c-permis').value.trim() : '';
   var message = document.getElementById('c-message') ? document.getElementById('c-message').value.trim() : '';
   var cvFiles = document.getElementById('c-cv').files;
   var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -544,6 +545,7 @@ document.getElementById('candidatureForm').addEventListener('submit', function(e
   fd.append('telephone', tel);
   fd.append('email', email);
   fd.append('poste', poste);
+  fd.append('permis', permis);
   fd.append('message', message);
   if (cvFiles.length > 0) fd.append('cv', cvFiles[0]);
 
