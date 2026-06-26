@@ -301,11 +301,7 @@
 
       <div class="candidatez-form reveal-right">
         <h3>Déposez votre candidature</h3>
-        <form id="candidatureForm" action="https://formsubmit.co/stmtransports@yahoo.com" method="POST" enctype="multipart/form-data" novalidate>
-          <input type="hidden" name="_subject" value="Nouvelle candidature STELA" />
-          <input type="hidden" name="_captcha" value="false" />
-          <input type="hidden" name="_template" value="table" />
-          <input type="hidden" name="_next" value="https://stela-transport.fr/candidater.html?merci=1" />
+        <form id="candidatureForm" novalidate>
 
           <div class="form-row">
             <div class="form-group">
@@ -515,12 +511,13 @@ function showErrC(id) {
   if (err) err.classList.add('visible');
 }
 
-/* Validation puis submit natif vers FormSubmit */
 document.getElementById('candidatureForm').addEventListener('submit', function(e) {
+  e.preventDefault();
   var nom     = document.getElementById('c-nom').value.trim();
   var tel     = document.getElementById('c-tel').value.trim();
   var email   = document.getElementById('c-email').value.trim();
   var poste   = document.getElementById('c-poste').value;
+  var message = document.getElementById('c-message') ? document.getElementById('c-message').value.trim() : '';
   var cvFiles = document.getElementById('c-cv').files;
   var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   var valid = true;
@@ -530,25 +527,48 @@ document.getElementById('candidatureForm').addEventListener('submit', function(e
   if (!poste)   { showErrC('c-poste'); valid = false; }
   if (!cvFiles || cvFiles.length === 0) { document.getElementById('err-c-cv').classList.add('visible'); valid = false; }
   if (!valid) {
-    e.preventDefault();
     var first = document.querySelector('.invalid, .field-error.visible');
     if (first) first.scrollIntoView({ behavior:'smooth', block:'center' });
     return;
   }
-  document.getElementById('submitBtn').disabled = true;
-  document.getElementById('submitBtn').textContent = 'Envoi en cours…';
-});
 
-/* Affiche le message de succès si FormSubmit a redirigé avec ?merci=1 */
-if (new URLSearchParams(window.location.search).get('merci') === '1') {
-  var successBox = document.getElementById('candidatureSuccess');
-  var formEl     = document.getElementById('candidatureForm');
-  if (successBox) {
-    successBox.classList.add('visible');
-    successBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
-  if (formEl) formEl.style.display = 'none';
-}
+  var btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Envoi en cours…';
+
+  var fd = new FormData();
+  fd.append('nom', nom);
+  fd.append('telephone', tel);
+  fd.append('email', email);
+  fd.append('poste', poste);
+  fd.append('message', message);
+  if (cvFiles.length > 0) fd.append('cv', cvFiles[0]);
+
+  fetch('https://tourtrack-stela.onrender.com/api/stela/candidature', {
+    method: 'POST',
+    body: fd
+  })
+  .then(function(r) {
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+  })
+  .then(function(data) {
+    if (!data.ok) throw new Error(data.error || 'Envoi refusé');
+    document.getElementById('candidatureForm').reset();
+    var successBox = document.getElementById('candidatureSuccess');
+    if (successBox) {
+      successBox.classList.add('visible');
+      successBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    document.getElementById('candidatureForm').style.display = 'none';
+    btn.disabled = false;
+    btn.textContent = 'Envoyer ma candidature';
+  })
+  .catch(function() {
+    btn.textContent = 'Erreur — réessayez';
+    btn.disabled = false;
+  });
+});
 </script>
 </body>
 </html>
