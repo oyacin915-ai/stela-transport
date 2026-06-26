@@ -1318,10 +1318,30 @@ document.querySelectorAll('.counter-value[data-target]').forEach(function(el) {
   counterObs.observe(el);
 });
 
-/* ── Formulaire devis : validation + FormSubmit AJAX ── */
+/* ── Formulaire devis : validation + AJAX ── */
 var STELA_API = 'https://tourtrack-stela.onrender.com';
-// Ping silencieux au chargement de la page pour réveiller Render si endormi
-fetch(STELA_API + '/health', { method: 'GET' }).catch(function(){});
+
+function pingServer() {
+  return fetch(STELA_API + '/health', { method: 'GET' }).catch(function(){});
+}
+pingServer();
+window.addEventListener('focus', pingServer);
+document.getElementById('devisForm').addEventListener('focusin', pingServer, { once: true });
+
+function waitForServer(maxMs) {
+  return new Promise(function(resolve) {
+    var deadline = Date.now() + maxMs;
+    function attempt() {
+      fetch(STELA_API + '/health', { method: 'GET' })
+        .then(function(r) { if (r.ok) { resolve(true); } else { retry(); } })
+        .catch(function() { retry(); });
+    }
+    function retry() {
+      if (Date.now() + 3500 < deadline) { setTimeout(attempt, 3500); } else { resolve(false); }
+    }
+    attempt();
+  });
+}
 
 var form = document.getElementById('devisForm');
 ['nom','tel','email','depart','arrivee','prestation'].forEach(function(id) {
@@ -1366,36 +1386,43 @@ form.addEventListener('submit', function(e) {
   }
 
   var btn = form.querySelector('button[type=submit]');
-  btn.textContent = 'Envoi en cours…';
+  btn.textContent = 'Connexion au serveur…';
   btn.disabled = true;
+  var payload = {
+    nom: nom, telephone: tel, email: email,
+    depart: depart, arrivee: arrivee, prestation: prestation,
+    description: document.getElementById('description').value.trim() || ''
+  };
 
-  fetch(STELA_API + '/api/stela/contact', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      nom: nom,
-      telephone: tel,
-      email: email,
-      depart: depart,
-      arrivee: arrivee,
-      prestation: prestation,
-      description: document.getElementById('description').value.trim() || ''
+  waitForServer(45000).then(function(ready) {
+    if (!ready) {
+      btn.textContent = 'Serveur indisponible — réessayez dans 1 min';
+      btn.disabled = false;
+      setTimeout(function() { btn.textContent = 'Envoyer ma demande'; }, 7000);
+      return;
+    }
+    btn.textContent = 'Envoi en cours…';
+    return fetch(STELA_API + '/api/stela/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
     })
-  })
-  .then(function(r) {
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    return r.json();
-  })
-  .then(function(data) {
-    if (!data.ok) throw new Error(data.error || 'Envoi refusé');
-    form.reset();
-    document.getElementById('formSuccess').classList.add('visible');
-    btn.textContent = 'Envoyer ma demande';
-    btn.disabled = false;
-  })
-  .catch(function() {
-    btn.textContent = 'Erreur — réessayez';
-    btn.disabled = false;
+    .then(function(r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
+    .then(function(data) {
+      if (!data.ok) throw new Error(data.error || 'Envoi refusé');
+      form.reset();
+      document.getElementById('formSuccess').classList.add('visible');
+      btn.textContent = 'Envoyer ma demande';
+      btn.disabled = false;
+    })
+    .catch(function(err) {
+      btn.textContent = err && err.message ? err.message : 'Erreur — réessayez';
+      btn.disabled = false;
+      setTimeout(function() { btn.textContent = 'Envoyer ma demande'; }, 6000);
+    });
   });
 });
 
