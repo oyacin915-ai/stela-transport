@@ -505,38 +505,43 @@ function clearErrC(id) {
   if (err) err.classList.remove('visible');
 }
 var STELA_API = 'https://tourtrack-stela.onrender.com';
-
-function pingServer() {
-  return fetch(STELA_API + '/health', { method: 'GET' }).catch(function(){});
-}
-pingServer();
-window.addEventListener('focus', pingServer);
-document.getElementById('candidatureForm').addEventListener('focusin', pingServer, { once: true });
-
-function waitForServer(maxMs) {
-  return new Promise(function(resolve) {
-    var deadline = Date.now() + maxMs;
-    function attempt() {
-      fetch(STELA_API + '/health', { method: 'GET' })
-        .then(function(r) { if (r.ok) { resolve(true); } else { retry(); } })
-        .catch(function() { retry(); });
-    }
-    function retry() {
-      if (Date.now() + 3500 < deadline) {
-        setTimeout(attempt, 3500);
-      } else {
-        resolve(false);
-      }
-    }
-    attempt();
-  });
-}
+fetch(STELA_API + '/health').catch(function(){});
 
 function showErrC(id) {
   var el  = document.getElementById(id);
   var err = document.getElementById('err-' + id);
   if (el) el.classList.add('invalid');
   if (err) err.classList.add('visible');
+}
+
+function envoyerCandidature(fd, btn, tentative) {
+  var ctrl = new AbortController();
+  var timer = setTimeout(function() { ctrl.abort(); }, 15000);
+  fetch(STELA_API + '/api/stela/candidature', { method: 'POST', body: fd, signal: ctrl.signal })
+    .then(function(r) { clearTimeout(timer); return r.json(); })
+    .then(function(data) {
+      if (!data.ok) throw new Error(data.error || 'Erreur serveur');
+      document.getElementById('candidatureForm').reset();
+      var successBox = document.getElementById('candidatureSuccess');
+      if (successBox) {
+        successBox.classList.add('visible');
+        successBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      document.getElementById('candidatureForm').style.display = 'none';
+      btn.disabled = false;
+      btn.textContent = 'Envoyer ma candidature';
+    })
+    .catch(function(err) {
+      clearTimeout(timer);
+      if (tentative < 2) {
+        btn.textContent = 'Nouvelle tentative…';
+        setTimeout(function() { envoyerCandidature(fd, btn, tentative + 1); }, 3000);
+      } else {
+        btn.textContent = 'Erreur — réessayez';
+        btn.disabled = false;
+        setTimeout(function() { btn.textContent = 'Envoyer ma candidature'; }, 5000);
+      }
+    });
 }
 
 document.getElementById('candidatureForm').addEventListener('submit', function(e) {
@@ -574,33 +579,7 @@ document.getElementById('candidatureForm').addEventListener('submit', function(e
   fd.append('message', message);
   if (cvFiles.length > 0) fd.append('cv', cvFiles[0]);
 
-  waitForServer(90000).then(function(ready) {
-    if (!ready) {
-      btn.textContent = 'Erreur de connexion — réessayez';
-      btn.disabled = false;
-      setTimeout(function() { btn.textContent = 'Envoyer ma candidature'; }, 5000);
-      return;
-    }
-    return fetch(STELA_API + '/api/stela/candidature', { method: 'POST', body: fd })
-      .then(function(r) { return r.json(); })
-      .then(function(data) {
-        if (!data.ok) throw new Error(data.error || 'Erreur serveur');
-        document.getElementById('candidatureForm').reset();
-        var successBox = document.getElementById('candidatureSuccess');
-        if (successBox) {
-          successBox.classList.add('visible');
-          successBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-        document.getElementById('candidatureForm').style.display = 'none';
-        btn.disabled = false;
-        btn.textContent = 'Envoyer ma candidature';
-      })
-      .catch(function(err) {
-        btn.textContent = err && err.message ? err.message : 'Erreur — réessayez';
-        btn.disabled = false;
-        setTimeout(function() { btn.textContent = 'Envoyer ma candidature'; }, 5000);
-      });
-  });
+  envoyerCandidature(fd, btn, 1);
 });
 </script>
 </body>
