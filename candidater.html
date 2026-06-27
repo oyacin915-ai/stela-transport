@@ -574,7 +574,14 @@ document.getElementById('candidatureForm').addEventListener('submit', function(e
   fd.append('message', message);
   if (cvFiles.length > 0) fd.append('cv', cvFiles[0]);
 
-  waitForServer(45000).then(function(ready) {
+  var elapsed = 0;
+  var ticker = setInterval(function() {
+    elapsed++;
+    if (btn.disabled) btn.textContent = 'Démarrage du serveur… ' + elapsed + 's';
+  }, 1000);
+
+  waitForServer(90000).then(function(ready) {
+    clearInterval(ticker);
     if (!ready) {
       btn.textContent = 'Serveur indisponible — réessayez dans 1 min';
       btn.disabled = false;
