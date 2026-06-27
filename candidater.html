@@ -514,32 +514,44 @@ function showErrC(id) {
   if (err) err.classList.add('visible');
 }
 
+function afficherErreurBtn(btn, msg) {
+  btn.textContent = msg || 'Erreur — réessayez';
+  btn.disabled = false;
+  setTimeout(function() { btn.textContent = 'Envoyer ma candidature'; }, 6000);
+}
+
 function envoyerCandidature(fd, btn, tentative) {
   var ctrl = new AbortController();
-  var timer = setTimeout(function() { ctrl.abort(); }, 15000);
+  var timer = setTimeout(function() { ctrl.abort(); }, 20000);
   fetch(STELA_API + '/api/stela/candidature', { method: 'POST', body: fd, signal: ctrl.signal })
-    .then(function(r) { clearTimeout(timer); return r.json(); })
-    .then(function(data) {
-      if (!data.ok) throw new Error(data.error || 'Erreur serveur');
-      document.getElementById('candidatureForm').reset();
-      var successBox = document.getElementById('candidatureSuccess');
-      if (successBox) {
-        successBox.classList.add('visible');
-        successBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-      document.getElementById('candidatureForm').style.display = 'none';
-      btn.disabled = false;
-      btn.textContent = 'Envoyer ma candidature';
-    })
-    .catch(function(err) {
+    .then(function(r) {
       clearTimeout(timer);
+      return r.json();
+    })
+    .then(function(data) {
+      if (data.ok) {
+        document.getElementById('candidatureForm').reset();
+        var successBox = document.getElementById('candidatureSuccess');
+        if (successBox) {
+          successBox.classList.add('visible');
+          successBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        document.getElementById('candidatureForm').style.display = 'none';
+        btn.disabled = false;
+        btn.textContent = 'Envoyer ma candidature';
+      } else {
+        // Erreur serveur (validation, format fichier...) → pas de retry
+        afficherErreurBtn(btn, data.error || 'Erreur — réessayez');
+      }
+    })
+    .catch(function() {
+      clearTimeout(timer);
+      // Erreur réseau / timeout → 1 retry
       if (tentative < 2) {
         btn.textContent = 'Nouvelle tentative…';
         setTimeout(function() { envoyerCandidature(fd, btn, tentative + 1); }, 3000);
       } else {
-        btn.textContent = 'Erreur — réessayez';
-        btn.disabled = false;
-        setTimeout(function() { btn.textContent = 'Envoyer ma candidature'; }, 5000);
+        afficherErreurBtn(btn, 'Problème réseau — réessayez');
       }
     });
 }
