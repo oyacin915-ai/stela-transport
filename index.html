@@ -1386,7 +1386,7 @@ form.addEventListener('submit', function(e) {
   }
 
   var btn = form.querySelector('button[type=submit]');
-  btn.textContent = 'Connexion au serveur…';
+  btn.textContent = 'Envoi en cours…';
   btn.disabled = true;
   var payload = {
     nom: nom, telephone: tel, email: email,
@@ -1394,21 +1394,13 @@ form.addEventListener('submit', function(e) {
     description: document.getElementById('description').value.trim() || ''
   };
 
-  var elapsed = 0;
-  var ticker = setInterval(function() {
-    elapsed++;
-    if (btn.disabled) btn.textContent = 'Démarrage du serveur… ' + elapsed + 's';
-  }, 1000);
-
   waitForServer(90000).then(function(ready) {
-    clearInterval(ticker);
     if (!ready) {
-      btn.textContent = 'Serveur indisponible — réessayez dans 1 min';
+      btn.textContent = 'Erreur de connexion — réessayez';
       btn.disabled = false;
-      setTimeout(function() { btn.textContent = 'Envoyer ma demande'; }, 7000);
+      setTimeout(function() { btn.textContent = 'Envoyer ma demande'; }, 5000);
       return;
     }
-    btn.textContent = 'Envoi en cours…';
     return fetch(STELA_API + '/api/stela/contact', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -1428,7 +1420,7 @@ form.addEventListener('submit', function(e) {
     .catch(function(err) {
       btn.textContent = err && err.message ? err.message : 'Erreur — réessayez';
       btn.disabled = false;
-      setTimeout(function() { btn.textContent = 'Envoyer ma demande'; }, 6000);
+      setTimeout(function() { btn.textContent = 'Envoyer ma demande'; }, 5000);
     });
   });
 });
