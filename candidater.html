@@ -522,13 +522,15 @@ function afficherErreurBtn(btn, msg) {
 
 function envoyerCandidature(fd, btn, tentative) {
   var ctrl = new AbortController();
-  var timer = setTimeout(function() { ctrl.abort(); }, 20000);
+  var timer = setTimeout(function() { ctrl.abort(); }, 25000);
   fetch(STELA_API + '/api/stela/candidature', { method: 'POST', body: fd, signal: ctrl.signal })
     .then(function(r) {
       clearTimeout(timer);
-      return r.json();
+      return r.text();
     })
-    .then(function(data) {
+    .then(function(text) {
+      var data;
+      try { data = JSON.parse(text); } catch(e) { throw new Error('réponse-invalide'); }
       if (data.ok) {
         document.getElementById('candidatureForm').reset();
         var successBox = document.getElementById('candidatureSuccess');
@@ -540,18 +542,19 @@ function envoyerCandidature(fd, btn, tentative) {
         btn.disabled = false;
         btn.textContent = 'Envoyer ma candidature';
       } else {
-        // Erreur serveur (validation, format fichier...) → pas de retry
         afficherErreurBtn(btn, data.error || 'Erreur — réessayez');
       }
     })
-    .catch(function() {
+    .catch(function(err) {
       clearTimeout(timer);
-      // Erreur réseau / timeout → 1 retry
-      if (tentative < 2) {
+      var isTimeout = err && err.name === 'AbortError';
+      var isServerErr = err && err.message === 'réponse-invalide';
+      if ((isTimeout || isServerErr) || tentative >= 2) {
+        var msg = isTimeout ? 'Délai dépassé — réessayez' : 'Erreur réseau — réessayez';
+        afficherErreurBtn(btn, msg);
+      } else {
         btn.textContent = 'Nouvelle tentative…';
         setTimeout(function() { envoyerCandidature(fd, btn, tentative + 1); }, 3000);
-      } else {
-        afficherErreurBtn(btn, 'Problème réseau — réessayez');
       }
     });
 }
@@ -572,6 +575,12 @@ document.getElementById('candidatureForm').addEventListener('submit', function(e
   if (!emailOk) { showErrC('c-email'); valid = false; }
   if (!poste)   { showErrC('c-poste'); valid = false; }
   if (!cvFiles || cvFiles.length === 0) { document.getElementById('err-c-cv').classList.add('visible'); valid = false; }
+  // Vérification taille max 8 Mo côté client
+  if (cvFiles && cvFiles.length > 0 && cvFiles[0].size > 8 * 1024 * 1024) {
+    var errCv = document.getElementById('err-c-cv');
+    if (errCv) { errCv.textContent = 'Fichier trop volumineux (8 Mo max)'; errCv.classList.add('visible'); }
+    valid = false;
+  }
   if (!valid) {
     var first = document.querySelector('.invalid, .field-error.visible');
     if (first) first.scrollIntoView({ behavior:'smooth', block:'center' });
